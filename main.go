@@ -1,11 +1,16 @@
 package main
 
 import (
+	"github.com/jkusniar/lara/api"
 	"github.com/jkusniar/lara/msg"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"time"
+)
+
+var (
+	dispatcher *msg.Dispatcher
 )
 
 func logMiddleware(next http.Handler) http.Handler {
@@ -24,14 +29,14 @@ func logMiddleware(next http.Handler) http.Handler {
 }
 
 func apiHandler(w http.ResponseWriter, r *http.Request) {
-	handlerFn, err := msg.Parse(r.Body)
+	msgHandlerFn, err := dispatcher.Dispatch(r.Body)
 	if err != nil {
 		log.Printf("Error parsing request body: %s\n", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	if err := handlerFn(w); err != nil {
+	if err := msgHandlerFn(w); err != nil {
 		log.Printf("Error processing request: %s\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -39,6 +44,8 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 
 func init() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	dispatcher = new(msg.Dispatcher)
+	dispatcher.Registry = api.RegisterHandlers()
 }
 
 func main() {

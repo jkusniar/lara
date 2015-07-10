@@ -3,10 +3,8 @@ package msg
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jkusniar/lara/api"
 	"io"
 	"log"
-	"reflect"
 )
 
 type Message struct {
@@ -18,53 +16,50 @@ func (m *Message) String() string {
 	return fmt.Sprintf("Message.Name=%s", m.Name)
 }
 
-type UnsupportedMessageType struct {
-	MessageName string
-}
-
-func (u UnsupportedMessageType) Error() string {
-	return fmt.Sprintf("Unsupported message type %s", u.MessageName)
-}
-
 type MessageHandlerFunc func(io.Writer) error
 
-func Parse(request io.ReadCloser) (fn MessageHandlerFunc, err error) {
+type Dispatcher struct {
+	Registry *HandlerRegistry
+}
+
+// TODO translate errors to JSON
+func (dispatcher *Dispatcher) Dispatch(request io.ReadCloser) (fn MessageHandlerFunc, err error) {
 	var message Message
 	err = json.NewDecoder(request).Decode(&message)
 	if err != nil {
 		return
 	}
 
-	log.Println("Parsed message: ", &message)
+	log.Println("Dispatching handler for message: ", &message)
 
-	// prepare request -> TODO refactor reflection parts to "api" package
-	method := api.Registry[message.Name]
-	if method == nil {
-		err = UnsupportedMessageType{message.Name}
+	// get callable message handler based on message name
+	var handler *Handler
+	handler, err = dispatcher.Registry.Handler(message.Name)
+	if err != nil {
 		return
 	}
 
-	reqVal := reflect.New(method.RequestType)
-	req := reqVal.Interface()
-	if err := json.Unmarshal(message.Content, &req); err != nil {
-		return nil, err
+	// JSON decode handlers' param value from message content
+	param := handler.Param()
+	if err = json.Unmarshal(message.Content, &param); err != nil {
+		return
 	}
-	log.Println("req: ", req)
+
+	log.Println("Handlers' param: ", param)
 
 	return MessageHandlerFunc(func(w io.Writer) error {
-		// call api handler and encode response to output
-		in := []reflect.Value{reqVal}
-		out := method.HandlerFn.Call(in)
-
-		ierr := out[1].Interface()
-		if ierr != nil {
-			return ierr.(error)
+		// call handler function
+		resp, e := handler.Call()
+		if e != nil {
+			return e
 		}
 
-		resp := out[0].Interface()
-		//w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		//w.WriteHeader(http.StatusOK)
-		if e := json.NewEncoder(w).Encode(resp); e != nil {
+		log.Println("Handlers' result: ", resp)
+
+		// JSON encode response to Writer
+		// TODO response content type should be application/json
+		// /w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		if e = json.NewEncoder(w).Encode(resp); e != nil {
 			log.Panicln(e)
 		}
 
