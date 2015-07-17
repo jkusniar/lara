@@ -3,8 +3,8 @@ package msg
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/jkusniar/lara/logger"
 	"io"
-	"log"
 )
 
 type Message struct {
@@ -30,7 +30,7 @@ func (dispatcher *Dispatcher) Dispatch(request io.ReadCloser) (fn MessageHandler
 		return
 	}
 
-	log.Println("Dispatching handler for message: ", &message)
+	logger.Debug("Dispatching handler for message: ", &message)
 
 	// get callable message handler based on message name
 	var handler *Handler
@@ -45,7 +45,7 @@ func (dispatcher *Dispatcher) Dispatch(request io.ReadCloser) (fn MessageHandler
 		return
 	}
 
-	log.Println("Handlers' param: ", param)
+	logger.Debug("Handlers' param: ", param)
 
 	return MessageHandlerFunc(func(w io.Writer) error {
 		// call handler function
@@ -54,13 +54,13 @@ func (dispatcher *Dispatcher) Dispatch(request io.ReadCloser) (fn MessageHandler
 			return e
 		}
 
-		log.Println("Handlers' result: ", resp)
+		logger.Debug("Handlers' result: ", resp)
 
 		// JSON encode response to Writer
 		// TODO response content type should be application/json
 		// /w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		if e = json.NewEncoder(w).Encode(resp); e != nil {
-			log.Panicln(e)
+			logger.Panic(e) // TODO should panic really be here?
 		}
 
 		return nil
