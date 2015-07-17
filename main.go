@@ -35,6 +35,7 @@ func logMiddleware(next http.Handler) http.Handler {
 }
 
 func apiHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	msgHandlerFn, err := dispatcher.Dispatch(r.Body)
 	if err != nil {
 		logger.Errorf("Error parsing request body: %s\n", err)

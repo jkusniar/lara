@@ -57,8 +57,6 @@ func (dispatcher *Dispatcher) Dispatch(request io.ReadCloser) (fn MessageHandler
 		logger.Debug("Handlers' result: ", resp)
 
 		// JSON encode response to Writer
-		// TODO response content type should be application/json
-		// /w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		if e = json.NewEncoder(w).Encode(resp); e != nil {
 			logger.Panic(e) // TODO should panic really be here?
 		}
