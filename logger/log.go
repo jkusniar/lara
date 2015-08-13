@@ -6,23 +6,25 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"runtime"
+	"time"
 )
 
 var (
-	debug      *Log
-	info       *Log
-	warn       *Log
-	error      *Log
+	debug      Log
+	info       Log
+	warn       Log
+	error      Log
 	loggerfile *os.File
 	level      uint8
 	done       = make(chan bool)
 )
 
 const (
-	DEBUG = "DEBUG: "
-	INFO  = "INFO: "
-	WARN  = "WARN: "
-	ERROR = "ERROR: "
+	DEBUG = "DEBUG "
+	INFO  = "INFO "
+	WARN  = "WARN "
+	ERROR = "ERROR "
 )
 
 const (
@@ -33,19 +35,30 @@ const (
 )
 
 type Log struct {
-	LogChan chan string
+	LogChan chan logEntry
 	log     *log.Logger
 	// TODO implement automatic file rotation using another channel
 }
 
-func newLog(w io.Writer, prefix string) *Log {
-	return &Log{
-		LogChan: make(chan string, 10),
-		log:     log.New(w, prefix, log.LstdFlags|log.Lshortfile),
+type logEntry struct {
+	Message  string
+	Filename string
+	Line     int
+	Time     time.Time
+}
+
+func (entry logEntry) String() string {
+	return fmt.Sprintf("%v %v:%v: %v", entry.Time, entry.Filename, entry.Line, entry.Message)
+}
+
+func newLog(w io.Writer, prefix string) Log {
+	return Log{
+		LogChan: make(chan logEntry, 10),
+		log:     log.New(w, prefix, 0),
 	}
 }
 
-func (l *Log) listen() {
+func (l Log) listen() {
 	for {
 		msg, more := <-l.LogChan
 		if more {
@@ -57,7 +70,7 @@ func (l *Log) listen() {
 	}
 }
 
-func (l *Log) shutdown() {
+func (l Log) shutdown() {
 	close(l.LogChan)
 }
 
@@ -118,70 +131,110 @@ func Shutdown() {
 
 func Debug(v ...interface{}) {
 	if level >= LEVEL_DEBUG {
-		debug.LogChan <- fmt.Sprint(v...)
+		debug.LogChan <- createLogEntry(v...)
 	}
 }
 
 func Debugf(format string, v ...interface{}) {
 	if level >= LEVEL_DEBUG {
-		debug.LogChan <- fmt.Sprintf(format, v...)
+		debug.LogChan <- createLogEntryf(format, v...)
 	}
 }
 
 func Info(v ...interface{}) {
 	if level >= LEVEL_INFO {
-		info.LogChan <- fmt.Sprint(v...)
+		info.LogChan <- createLogEntry(v...)
 	}
 }
 
 func Infof(format string, v ...interface{}) {
 	if level >= LEVEL_INFO {
-		info.LogChan <- fmt.Sprintf(format, v...)
+		info.LogChan <- createLogEntryf(format, v...)
 	}
 }
 
 func Warn(v ...interface{}) {
 	if level >= LEVEL_WARN {
-		warn.LogChan <- fmt.Sprint(v...)
+		warn.LogChan <- createLogEntry(v...)
 	}
 }
 
 func Warnf(format string, v ...interface{}) {
 	if level >= LEVEL_WARN {
-		warn.LogChan <- fmt.Sprintf(format, v...)
+		warn.LogChan <- createLogEntryf(format, v...)
 	}
 }
 
 func Error(v ...interface{}) {
-	error.LogChan <- fmt.Sprint(v...)
+	error.LogChan <- createLogEntry(v...)
 }
 
 func Errorf(format string, v ...interface{}) {
-	error.LogChan <- fmt.Sprintf(format, v...)
+	error.LogChan <- createLogEntryf(format, v...)
 }
 
 func Panic(v ...interface{}) {
-	msg := fmt.Sprint(v...)
-	error.LogChan <- msg
-	panic(msg)
+	entry := createLogEntry(v...)
+	error.LogChan <- entry
+	panic(entry.Message)
 
 }
 
 func Panicf(format string, v ...interface{}) {
-	msg := fmt.Sprintf(format, v...)
-	error.LogChan <- msg
-	panic(msg)
+	entry := createLogEntryf(format, v...)
+	error.LogChan <- entry
+	panic(entry.Message)
 }
 
 func Fatal(v ...interface{}) {
-	msg := fmt.Sprint(v...)
-	error.LogChan <- msg
+	error.LogChan <- createLogEntry(v...)
 	os.Exit(1)
 
 }
 
 func Fatalf(format string, v ...interface{}) {
-	msg := fmt.Sprintf(format, v...)
-	error.LogChan <- msg
+	error.LogChan <- createLogEntryf(format, v...)
 	os.Exit(1)
+}
+
+func createLogEntryf(format string, v ...interface{}) logEntry {
+	now := time.Now()
+	file, line := callerInfo()
+	return logEntry{
+		Message:  fmt.Sprintf(format, v...),
+		Filename: file,
+		Line:     line,
+		Time:     now,
+	}
+}
+
+func createLogEntry(v ...interface{}) logEntry {
+	now := time.Now()
+	file, line := callerInfo()
+	return logEntry{
+		Message:  fmt.Sprint(v...),
+		Filename: file,
+		Line:     line,
+		Time:     now,
+	}
+}
+
+func callerInfo() (file string, line int) {
+	var ok bool
+	_, file, line, ok = runtime.Caller(3)
+	if !ok {
+		file = "???"
+		line = 0
+	}
+
+	short := file
+	for i := len(file) - 1; i > 0; i-- {
+		if file[i] == '/' {
+			short = file[i+1:]
+			break
+		}
+	}
+	file = short
+
+	return
 }
