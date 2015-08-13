@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/jkusniar/lara/api"
+	"github.com/jkusniar/lara/auth"
 	"github.com/jkusniar/lara/logger"
 	"github.com/jkusniar/lara/msg"
 	"net/http"
@@ -34,6 +35,18 @@ func logMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func authMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if err := auth.Validate(w, r); err != nil {
+			logger.Errorf("Authorization failed: %s\n", err)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func apiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	msgHandlerFn, err := dispatcher.Dispatch(r.Body)
@@ -47,6 +60,14 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 		logger.Errorf("Error processing request: %s\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	auth.Login(w, r)
+}
+
+func regHandler(w http.ResponseWriter, r *http.Request) {
+	auth.Register(w, r)
 }
 
 func init() {
@@ -80,11 +101,14 @@ func main() {
 	dispatcher = new(msg.Dispatcher)
 	dispatcher.Registry = api.RegisterHandlers()
 
-	handler := http.HandlerFunc(apiHandler)
-	http.Handle("/api", logMiddleware(handler))
+	// TODO, allow only post requests to api/login/register
+	// TODO validate content type prior to processing of requests
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 	})
+	http.Handle("/login", logMiddleware(http.HandlerFunc(loginHandler)))
+	http.Handle("/register", logMiddleware(http.HandlerFunc(regHandler)))
+	http.Handle("/api", logMiddleware(authMiddleware(http.HandlerFunc(apiHandler))))
 
 	logger.Fatal(http.ListenAndServe(":8080", nil))
 }

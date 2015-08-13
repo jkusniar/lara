@@ -58,7 +58,7 @@ func (dispatcher *Dispatcher) Dispatch(request io.ReadCloser) (fn MessageHandler
 
 		// JSON encode response to Writer
 		if e = json.NewEncoder(w).Encode(resp); e != nil {
-			logger.Panic(e) // TODO should panic really be here?
+			logger.Panic(e)
 		}
 
 		return nil
