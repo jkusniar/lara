@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/jkusniar/lara/api"
+	"github.com/jkusniar/lara/app"
 	"github.com/jkusniar/lara/auth"
-	"github.com/jkusniar/lara/logger"
 	"github.com/jkusniar/lara/msg"
 	"net/http"
 	"net/http/httputil"
@@ -25,20 +25,20 @@ func logMiddleware(next http.Handler) http.Handler {
 		start := time.Now()
 
 		if req, err := httputil.DumpRequest(r, true); err != nil {
-			logger.Debugf("Error dumping http request: %s\n\n", err)
+			app.Log.Debugf("Error dumping http request: %s\n\n", err)
 		} else {
-			logger.Debugf("Processing HTTP request:\n\n %s \n\n", req)
+			app.Log.Debugf("Processing HTTP request:\n\n %s \n\n", req)
 		}
 		next.ServeHTTP(w, r)
 
-		logger.Debugf("Request processing took: %s\n", time.Since(start))
+		app.Log.Debugf("Request processing took: %s\n", time.Since(start))
 	})
 }
 
 func authMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if err := auth.Validate(w, r); err != nil {
-			logger.Errorf("Authorization failed: %s\n", err)
+			app.Log.Errorf("Authorization failed: %s\n", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
@@ -51,13 +51,13 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	msgHandlerFn, err := dispatcher.Dispatch(r.Body)
 	if err != nil {
-		logger.Errorf("Error parsing request body: %s\n", err)
+		app.Log.Errorf("Error parsing request body: %s\n", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	if err := msgHandlerFn(w); err != nil {
-		logger.Errorf("Error processing request: %s\n", err)
+		app.Log.Errorf("Error processing request: %s\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
@@ -85,8 +85,8 @@ func signalHandler() {
 		syscall.SIGABRT,
 	)
 	<-signalChan
-	// cleanup (logger, db...)
-	logger.Shutdown()
+	// cleanup (log, db...)
+	app.ShutdownLog()
 	os.Exit(0)
 }
 
@@ -95,8 +95,8 @@ func main() {
 
 	go signalHandler()
 
-	logger.Start(logfile, loglevel)
-	defer logger.Shutdown()
+	app.StartLog(logfile, loglevel)
+	defer app.ShutdownLog()
 
 	dispatcher = new(msg.Dispatcher)
 	dispatcher.Registry = api.RegisterHandlers()
@@ -110,5 +110,6 @@ func main() {
 	http.Handle("/register", logMiddleware(http.HandlerFunc(regHandler)))
 	http.Handle("/api", logMiddleware(authMiddleware(http.HandlerFunc(apiHandler))))
 
-	logger.Fatal(http.ListenAndServe(":8080", nil))
+	// TODO refactor logger to logger.Log.Fatal....
+	app.Log.Fatal(http.ListenAndServe(":8080", nil))
 }

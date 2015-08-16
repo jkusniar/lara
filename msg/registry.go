@@ -2,7 +2,7 @@ package msg
 
 import (
 	"fmt"
-	"github.com/jkusniar/lara/logger"
+	"github.com/jkusniar/lara/app"
 	"reflect"
 )
 
@@ -20,48 +20,48 @@ func (registry *HandlerRegistry) RegisterHandler(name string, fn interface{}) {
 	fv := reflect.ValueOf(fn)
 	fntype := fv.Type()
 
-	logger.Infof("Registering %v as \"%v\"\n", fntype, name)
+	app.Log.Infof("Registering %v as \"%v\"\n", fntype, name)
 
 	// check if method already registered
 	if f, ok := (*registry)[name]; ok {
-		logger.Panicf("Handler %v already registered as %v", name, f)
+		app.Log.Panicf("Handler %v already registered as %v", name, f)
 	}
 
 	// check if registering a function
 	if fntype.Kind() != reflect.Func {
-		logger.Panicf("`fn` should be %s but is %s", reflect.Func, fntype.Kind())
+		app.Log.Panicf("`fn` should be %s but is %s", reflect.Func, fntype.Kind())
 	}
 
 	// check if function has proper in/out count
 	if fntype.NumIn() != 1 {
-		logger.Panicf("`fn` should have 1 parameter but it has %d parameters", fntype.NumIn())
+		app.Log.Panicf("`fn` should have 1 parameter but it has %d parameters", fntype.NumIn())
 	}
 	if fntype.NumOut() != 2 {
-		logger.Panicf("`fn` should return 2 values but it returns %d values", fntype.NumOut())
+		app.Log.Panicf("`fn` should return 2 values but it returns %d values", fntype.NumOut())
 	}
 
 	// check in/out data types
 	if fntype.In(0).Kind() != reflect.Ptr {
-		logger.Panicf("Parameter of `fn` should be %s but is %s", reflect.Ptr, fntype.In(0).Kind())
+		app.Log.Panicf("Parameter of `fn` should be %s but is %s", reflect.Ptr, fntype.In(0).Kind())
 	}
 	if fntype.In(0).Elem().Kind() != reflect.Struct {
-		logger.Panicf("Parameter of `fn` should point to %s but is pointing to %s",
+		app.Log.Panicf("Parameter of `fn` should point to %s but is pointing to %s",
 			reflect.Struct, fntype.In(0).Elem().Kind())
 	}
 
 	if fntype.Out(0).Kind() != reflect.Ptr {
-		logger.Panicf("1st response value of `fn` should be %s but is %s", reflect.Ptr,
+		app.Log.Panicf("1st response value of `fn` should be %s but is %s", reflect.Ptr,
 			fntype.Out(0).Kind())
 	}
 	if fntype.Out(0).Elem().Kind() != reflect.Struct {
-		logger.Panicf("1st response value of `fn` should point to %s but is pointing to %s",
+		app.Log.Panicf("1st response value of `fn` should point to %s but is pointing to %s",
 			reflect.Struct, fntype.Out(0).Elem().Kind())
 	}
 
 	//check if second response argument is error
 	errorType := reflect.TypeOf((*error)(nil)).Elem()
 	if fntype.Out(1) != errorType {
-		logger.Panicf("2nd response value of `fn` should implement error interface but is %s",
+		app.Log.Panicf("2nd response value of `fn` should implement error interface but is %s",
 			fntype.Out(1))
 	}
 

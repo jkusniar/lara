@@ -2,7 +2,7 @@ package api
 
 import (
 	"fmt"
-	"github.com/jkusniar/lara/logger"
+	"github.com/jkusniar/lara/app"
 )
 
 // TODO is there a need for these types/functions to be public (UpperCase) ?
@@ -26,6 +26,6 @@ func (r *CreateClientResponse) String() string {
 }
 
 func CreateClient(req *CreateClientRequest) (*CreateClientResponse, error) {
-	logger.Debug("Creating client ", req.FirstName, ", ", req.LastName)
+	app.Log.Debug("Creating client ", req.FirstName, ", ", req.LastName)
 	return &CreateClientResponse{"f47ac10b-58cc-4372-a567-0e02b2c3d479"}, nil
 }

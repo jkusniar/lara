@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/jkusniar/lara/logger"
+	"github.com/jkusniar/lara/app"
 	"golang.org/x/crypto/scrypt"
 	"io"
 	"io/ioutil"
@@ -63,7 +63,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var m loginMsg
 	err := json.NewDecoder(r.Body).Decode(&m)
 	if err != nil {
-		logger.Errorf("Error parsing login request body: %s\n", err)
+		app.Log.Errorf("Error parsing login request body: %s\n", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -86,7 +86,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	t.Claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
 	tokenString, err := t.SignedString(signKey)
 	if err != nil {
-		logger.Errorf("Token Signing error: %v\n", err)
+		app.Log.Errorf("Token Signing error: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -102,7 +102,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	var m loginMsg
 	err := json.NewDecoder(r.Body).Decode(&m)
 	if err != nil {
-		logger.Errorf("Error parsing register user request body: %s\n", err)
+		app.Log.Errorf("Error parsing register user request body: %s\n", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -111,12 +111,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	salt := make([]byte, SALT_BYTES)
 	_, err = io.ReadFull(rand.Reader, salt)
 	if err != nil {
-		logger.Errorf("Error generating salt: %s\n", err)
+		app.Log.Errorf("Error generating salt: %s\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	logger.Debugf("Generated salt: %x\n", salt)
+	app.Log.Debugf("Generated salt: %x\n", salt)
 
 	// generate hash
 	var hash []byte
@@ -128,7 +128,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 
 	// TODO store username, hash and salt in DB
 	w.WriteHeader(200)
-	logger.Debug(hash)
+	app.Log.Debug(hash)
 }
 
 // Validate validates if request containst proper authorization header with valid authorization token
@@ -162,17 +162,17 @@ func Validate(w http.ResponseWriter, r *http.Request) error {
 		return errors.New("Invalid authorization token")
 	}
 
-	logger.Debug("Granted access to restricted area")
+	app.Log.Debug("Granted access to restricted area")
 	return nil
 }
 
 func hashPass(password string, salt []byte) (hash []byte, err error) {
 	hash, err = scrypt.Key([]byte(password), salt, 16384, 8, 1, HASH_BYTES)
 	if err != nil {
-		logger.Errorf("Scrypt failed: %s\n", err)
+		app.Log.Errorf("Scrypt failed: %s\n", err)
 		return
 	}
 
-	logger.Debugf("Hash of password %s is %x\n", password, hash)
+	app.Log.Debugf("Hash of password %s is %x\n", password, hash)
 	return
 }

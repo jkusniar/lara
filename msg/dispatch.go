@@ -3,7 +3,7 @@ package msg
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jkusniar/lara/logger"
+	"github.com/jkusniar/lara/app"
 	"io"
 )
 
@@ -30,7 +30,7 @@ func (dispatcher *Dispatcher) Dispatch(request io.ReadCloser) (fn MessageHandler
 		return
 	}
 
-	logger.Debug("Dispatching handler for message: ", &message)
+	app.Log.Debug("Dispatching handler for message: ", &message)
 
 	// get callable message handler based on message name
 	var handler *Handler
@@ -45,7 +45,7 @@ func (dispatcher *Dispatcher) Dispatch(request io.ReadCloser) (fn MessageHandler
 		return
 	}
 
-	logger.Debug("Handlers' param: ", param)
+	app.Log.Debug("Handlers' param: ", param)
 
 	return MessageHandlerFunc(func(w io.Writer) error {
 		// call handler function
@@ -54,11 +54,11 @@ func (dispatcher *Dispatcher) Dispatch(request io.ReadCloser) (fn MessageHandler
 			return e
 		}
 
-		logger.Debug("Handlers' result: ", resp)
+		app.Log.Debug("Handlers' result: ", resp)
 
 		// JSON encode response to Writer
 		if e = json.NewEncoder(w).Encode(resp); e != nil {
-			logger.Panic(e)
+			app.Log.Panic(e)
 		}
 
 		return nil
