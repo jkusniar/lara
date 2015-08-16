@@ -3,7 +3,7 @@ package app
 
 import (
 	"fmt"
-	"github.com/jkusniar/lara/log"
+	log "github.com/jkusniar/go-log"
 	"io"
 	"os"
 )
