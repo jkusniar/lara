@@ -28,16 +28,16 @@ func StartLog(logfile, loglevel string) {
 	var min_level uint8
 	switch loglevel {
 	case "debug":
-		min_level = log.LEVEL_DEBUG
+		min_level = log.LevelDebug
 	case "info":
-		min_level = log.LEVEL_INFO
+		min_level = log.LevelInfo
 	case "warn":
-		min_level = log.LEVEL_WARN
+		min_level = log.LevelWarn
 	default:
-		min_level = log.LEVEL_ERROR
+		min_level = log.LevelError
 	}
 
-	Log = log.NewLogger(writer, min_level)
+	Log = log.New(writer, min_level)
 }
 
 // better name
