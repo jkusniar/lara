@@ -2,99 +2,110 @@ package msg
 
 import (
 	"fmt"
-	"github.com/jkusniar/lara/app"
 	"reflect"
 )
 
-type UnregisteredMessageError struct {
-	MessageName string
-}
+// Registry is a map "message name" -> reflect.Value, where Value is a
+// message handler function type. There should be an instance of Registry in
+// an application created by new function. Message handlers can then be
+// registered using Register method.
+type Registry map[string]reflect.Value
 
-func (u *UnregisteredMessageError) Error() string {
-	return fmt.Sprintf("Message with name %s is not registered", u.MessageName)
-}
-
-type HandlerRegistry map[string]reflect.Value
-
-func (registry *HandlerRegistry) RegisterHandler(name string, fn interface{}) {
+// Register registeres message handler funcion in reg. Before successful
+// registration couple of validation must pass. TODO
+func (reg *Registry) Register(name string, fn interface{}) error {
 	fv := reflect.ValueOf(fn)
 	fntype := fv.Type()
 
-	app.Log.Infof("Registering %v as \"%v\"\n", fntype, name)
-
 	// check if method already registered
-	if f, ok := (*registry)[name]; ok {
-		app.Log.Panicf("Handler %v already registered as %v", name, f)
+	if f, ok := (*reg)[name]; ok {
+		return fmt.Errorf("handler %v already registered as %v",
+			name, f)
 	}
 
 	// check if registering a function
 	if fntype.Kind() != reflect.Func {
-		app.Log.Panicf("`fn` should be %s but is %s", reflect.Func, fntype.Kind())
+		return fmt.Errorf("`fn` should be %s but is %s",
+			reflect.Func, fntype.Kind())
 	}
 
 	// check if function has proper in/out count
 	if fntype.NumIn() != 1 {
-		app.Log.Panicf("`fn` should have 1 parameter but it has %d parameters", fntype.NumIn())
+		return fmt.Errorf(
+			"`fn` should have 1 parameter but it has %d parameters",
+			fntype.NumIn())
 	}
 	if fntype.NumOut() != 2 {
-		app.Log.Panicf("`fn` should return 2 values but it returns %d values", fntype.NumOut())
+		return fmt.Errorf(
+			"`fn` should return 2 values but it returns %d values",
+			fntype.NumOut())
 	}
 
 	// check in/out data types
 	if fntype.In(0).Kind() != reflect.Ptr {
-		app.Log.Panicf("Parameter of `fn` should be %s but is %s", reflect.Ptr, fntype.In(0).Kind())
+		return fmt.Errorf("parameter of `fn` should be %s but is %s",
+			reflect.Ptr, fntype.In(0).Kind())
 	}
 	if fntype.In(0).Elem().Kind() != reflect.Struct {
-		app.Log.Panicf("Parameter of `fn` should point to %s but is pointing to %s",
+		return fmt.Errorf(
+			"parameter of `fn` should point to %s but is pointing to %s",
 			reflect.Struct, fntype.In(0).Elem().Kind())
 	}
 
 	if fntype.Out(0).Kind() != reflect.Ptr {
-		app.Log.Panicf("1st response value of `fn` should be %s but is %s", reflect.Ptr,
-			fntype.Out(0).Kind())
+		return fmt.Errorf(
+			"1st response value of `fn` should be %s but is %s",
+			reflect.Ptr, fntype.Out(0).Kind())
 	}
 	if fntype.Out(0).Elem().Kind() != reflect.Struct {
-		app.Log.Panicf("1st response value of `fn` should point to %s but is pointing to %s",
+		return fmt.Errorf(
+			"1st response value of `fn` should point to %s but is pointing to %s",
 			reflect.Struct, fntype.Out(0).Elem().Kind())
 	}
 
 	//check if second response argument is error
 	errorType := reflect.TypeOf((*error)(nil)).Elem()
 	if fntype.Out(1) != errorType {
-		app.Log.Panicf("2nd response value of `fn` should implement error interface but is %s",
+		return fmt.Errorf(
+			"2nd response value of `fn` should implement error interface but is %s",
 			fntype.Out(1))
 	}
 
 	//register
-	(*registry)[name] = fv
+	(*reg)[name] = fv
+
+	return nil
 }
 
-type Handler struct {
-	ParamPtr reflect.Value
-	FuncVal  reflect.Value
+// message handler struct
+type handler struct {
+	paramPtr reflect.Value // ptr to instance of message handler's param
+	funcVal  reflect.Value // message handler (func)
 }
 
-func (registry *HandlerRegistry) Handler(name string) (handler *Handler, err error) {
-	fv, ok := (*registry)[name]
+// Handler returns message handler struct for a given message name from registry
+func (reg *Registry) Handler(name string) (*handler, error) {
+	fv, ok := (*reg)[name]
 	if !ok {
-		err = &UnregisteredMessageError{name}
-		return
+		return nil,
+			fmt.Errorf("message with name %s is not registered",
+				name)
 	}
 
-	handler = new(Handler)
-	handler.ParamPtr = reflect.New(fv.Type().In(0).Elem())
-	handler.FuncVal = fv
-
-	return
+	return &handler{
+		paramPtr: reflect.New(fv.Type().In(0).Elem()),
+		funcVal:  fv}, nil
 }
 
-func (h *Handler) Param() interface{} {
-	return h.ParamPtr.Interface()
+// returns message handler parameter's interface
+func (h *handler) Param() interface{} {
+	return h.paramPtr.Interface()
 }
 
-func (h *Handler) Call() (resp interface{}, err error) {
-	in := []reflect.Value{h.ParamPtr}
-	out := h.FuncVal.Call(in)
+// calls message handler, returning response or error
+func (h *handler) Call() (resp interface{}, err error) {
+	in := []reflect.Value{h.paramPtr}
+	out := h.funcVal.Call(in)
 
 	ierr := out[1].Interface()
 	if ierr != nil {

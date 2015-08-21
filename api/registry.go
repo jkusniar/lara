@@ -4,10 +4,10 @@ import (
 	"github.com/jkusniar/lara/msg"
 )
 
-func RegisterHandlers() *msg.HandlerRegistry {
-	var registry = make(msg.HandlerRegistry)
+func RegisterHandlers() *msg.Registry {
+	var reg = make(msg.Registry)
 
-	registry.RegisterHandler("CreateClient", CreateClient)
+	reg.Register("CreateClient", CreateClient)
 
-	return &registry
+	return &reg
 }
