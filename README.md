@@ -1,6 +1,8 @@
 lara
 ====
 
+*This repo is deprecated in favor of https://github.com/jkusniar/lara-app*
+
 Simple software for veterinary practice
 
 ## Bootstrap
@@ -10,3 +12,4 @@ go get github.com/dgrijalva/jwt-go
 go get golang.org/x/crypto/scrypt
 go install github.com/jkusniar/lara
 ```
+
