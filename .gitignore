@@ -2,3 +2,5 @@ lara
 *.log
 *.rsa
 *.rsa.pub
+.vscode
+test
