@@ -11,5 +11,6 @@ before_script:
   - psql -c "ALTER USER lara WITH SUPERUSER;" -U postgres
 
 env:
-  - POSTGRES_USER=lara
-  - POSTGRES_PASSWORD=lara
+  global:
+    - POSTGRES_USER=lara
+    - POSTGRES_PASSWORD=lara
