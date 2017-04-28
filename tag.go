@@ -33,7 +33,7 @@ import (
 //if new object permission added to enum, run "go generate"
 type TagType int
 
-// Permissions enum
+// TagType enum
 const (
 	LyssaVirus  TagType = iota // Canine Rabies Tags, tag format: YYYY-SK-9999
 	Tattoo                     // Pet tattoo, tag format: regular string
