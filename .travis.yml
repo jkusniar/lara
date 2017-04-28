@@ -1,3 +1,15 @@
 language: go
+
 go:
   - 1.8
+
+services:
+  - postgresql
+
+before_script:
+  - psql -c "CREATE USER lara-ci WITH PASSWORD 'lara-ci';" -U postgres
+  - psql -c "ALTER USER lara-ci WITH SUPERUSER;" -U postgres
+
+env:
+  - POSTGRES_USER=lara-ci
+  - POSTGRES_PASSWORD=lara-ci
