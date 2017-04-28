@@ -7,9 +7,9 @@ services:
   - postgresql
 
 before_script:
-  - psql -c "CREATE USER lara-ci WITH PASSWORD 'lara-ci';" -U postgres
-  - psql -c "ALTER USER lara-ci WITH SUPERUSER;" -U postgres
+  - psql -c "CREATE USER lara WITH PASSWORD 'lara';" -U postgres
+  - psql -c "ALTER USER lara WITH SUPERUSER;" -U postgres
 
 env:
-  - POSTGRES_USER=lara-ci
-  - POSTGRES_PASSWORD=lara-ci
+  - POSTGRES_USER=lara
+  - POSTGRES_PASSWORD=lara
