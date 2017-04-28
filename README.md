@@ -2,6 +2,8 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://raw.githubusercontent.com/jkusniar/lara/master/LICENSE)
 
+Veterinary practice support software - back-end services.
+
 ## Build
 
 Requires go 1.8+
