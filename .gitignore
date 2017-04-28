@@ -1,6 +1,19 @@
-lara
-*.log
+*.swp
+.#*
+
+# JWT encryption keys
 *.rsa
 *.rsa.pub
-.vscode
-test
+
+# TLS encryption keys
+*.pem
+
+.idea
+
+./lara
+./lara-ctl
+dist/openbsd/lara
+dist/openbsd/lara-ctl
+
+# static web content
+static
