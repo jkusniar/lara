@@ -1,9 +1,11 @@
 .PHONY: default
-default: test ;
+default: all ;
+
+all: clean test build
 
 build:
-	go build github.com/jkusniar/lara/cmd/lara
-	go build github.com/jkusniar/lara/cmd/lara-ctl
+	go build -v github.com/jkusniar/lara/cmd/lara
+	go build -v github.com/jkusniar/lara/cmd/lara-ctl
 
 install:
 	go install github.com/jkusniar/lara/cmd/lara

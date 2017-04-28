@@ -27,7 +27,7 @@ must be running. Following environment variables are honored for tests:
 * `POSTGRES_HOST` (default "localhost")
 * `POSTGRES_DB` (default "lara_test")
 * `POSTGRES_USER` (default "postgres")
-* `POSTGRES_PASSWORD` (default "postgres")
+* `POSTGRES_PASSWORD` (default "")
 * `POSTGRES_PORT` (default 5432)
 
 Testing packages are:

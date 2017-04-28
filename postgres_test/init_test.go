@@ -89,7 +89,7 @@ var (
 func TestMain(m *testing.M) {
 	dbHost := fromEnv("POSTGRES_HOST", "localhost")
 	dbUser := fromEnv("POSTGRES_USER", "postgres")
-	dbPass := fromEnv("POSTGRES_PASSWORD", "postgres")
+	dbPass := fromEnv("POSTGRES_PASSWORD", "")
 	dbName := fromEnv("POSTGRES_DB", "lara_test")
 	dbPort, err := strconv.ParseUint(os.Getenv("POSTGRES_PORT"), 10, 64)
 	if err != nil {
