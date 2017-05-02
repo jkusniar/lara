@@ -19,6 +19,16 @@ go install github.com/jkusniar/lara/cmd/lara-ctl
 Runtime requirements:
 * system timezone is used to translate date/time strings in application
 
+## Development
+
+Requires GNU make. Install build dependencies if building first time:
+
+* `make build-deps`
+* `make`
+
+Will install build dependencies and run golint/go vet, unit tests and build binaries.
+Optionally install additional development dependencies using `make dev-deps`.
+
 ## Tests
 
 ```
@@ -33,16 +43,6 @@ must be running. Following environment variables are honored for tests:
 * `POSTGRES_USER` (default "postgres")
 * `POSTGRES_PASSWORD` (default "")
 * `POSTGRES_PORT` (default 5432)
-
-## Development
-
-Requires GNU make. Install build dependencies if building first time:
-
-* `make build-deps`
-* `make`
-
-Will install build dependencies and run golint/go vet, unit tests and build binaries.
-Optionally install additional development dependencies using `make dev-deps`.
 
 # License
 

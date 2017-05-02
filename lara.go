@@ -30,11 +30,13 @@ import (
 // -----------------------------------------------------------------------------
 // COMMON STRUCTURES
 
+// Versioned contains common fields for versioned data objects
 type Versioned struct {
 	ID      uint64 `json:"id"`
 	Version uint64 `json:"version"`
 }
 
+// CreatorModifier contains object's creator & modifier fields
 type CreatorModifier struct {
 	Creator  string    `json:"creator"`
 	Created  time.Time `json:"created"`
@@ -62,7 +64,7 @@ type Owner struct {
 	ICDPH     string `json:"ICDPH"`
 }
 
-// GetOwner is JSON encoded owner data
+// GetOwner is JSON encoded retrievable owner data
 type GetOwner struct {
 	Versioned
 	Owner
@@ -73,6 +75,7 @@ type GetOwner struct {
 	Patients []OwnersPatient `json:"patients"`
 }
 
+// OwnersPatient is JSON encoded owner's patient data
 type OwnersPatient struct {
 	ID      uint64 `json:"id"`
 	Name    string `json:"name"`
@@ -88,11 +91,13 @@ type UpdateOwner struct {
 	Owner
 }
 
+// CreateOwner is JSON encoded create owner structure
 type CreateOwner struct {
 	Owner
 	Patient NewPatient `json:"patient"`
 }
 
+// NewPatient is JSON encoded data of patient created together with an owner
 type NewPatient struct {
 	Patient
 	Record NewRecord `json:"record"`

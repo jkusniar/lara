@@ -13,11 +13,11 @@ dev-deps:
 	go get -u -v github.com/kardianos/govendor
 	go get -u -v golang.org/x/tools/cmd/stringer
 
-# call golint on all packages except vendor folder. STRICT (fails on error)
+# call golint on all packages except vendor folder
 lint:
 	@set -e; \
 	for p in $$(go list ./... | grep -v /vendor/); do \
-		golint -set_exit_status $$p || exit 1 ;\
+		golint $$p ;\
 	done
 
 # call go vet on all packages except vendor folder
