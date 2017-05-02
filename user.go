@@ -54,13 +54,13 @@ func MakePermissions(perms []string) (map[PermissionType]bool, error) {
 	return result, nil
 }
 
-// PermissionType is enum defining system permissions
+// PermissionType defines user's permission
 //go:generate stringer -type=PermissionType -output permission_string.go
 //requires golang.org/x/tools/cmd/stringer installed locally
 //if new object permission added to enum, run "go generate"
 type PermissionType int
 
-// Permissions enum
+// Permission types enum
 const (
 	ViewRecord PermissionType = iota
 	EditRecord
@@ -87,6 +87,7 @@ func (i *PermissionType) FromString(perm string) error {
 	return nil
 }
 
+// DefaultPermissions is set of default permissions for new user
 var DefaultPermissions = []PermissionType{ViewRecord}
 
 // UserService manages application's users
@@ -104,7 +105,7 @@ type keyType int
 
 const userKey keyType = 0
 
-// ContextWithUser returns a new Context that carries value u.
+// ContextWithUser returns a new Context that carries User u.
 func ContextWithUser(ctx context.Context, u *User) context.Context {
 	return context.WithValue(ctx, userKey, u)
 }

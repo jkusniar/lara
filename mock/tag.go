@@ -25,6 +25,7 @@ import (
 	"github.com/jkusniar/lara"
 )
 
+// TagService is mock implementation of lara.TagService
 type TagService struct {
 	GetFn      func(id uint64) (*lara.GetTag, error)
 	GetInvoked bool
@@ -39,21 +40,25 @@ type TagService struct {
 	GetPatientByTagInvoked bool
 }
 
+// GetPatientByTag mock implementation
 func (s *TagService) GetPatientByTag(ctx context.Context, tagValue string) (*lara.PatientByTag, error) {
 	s.GetPatientByTagInvoked = true
 	return s.GetPatientByTagFn(tagValue)
 }
 
+// Get mock implementation
 func (s *TagService) Get(ctx context.Context, id uint64) (*lara.GetTag, error) {
 	s.GetInvoked = true
 	return s.GetFn(id)
 }
 
+// Update mock implementation
 func (s *TagService) Update(ctx context.Context, id uint64, t *lara.UpdateTag) error {
 	s.UpdateInvoked = true
 	return s.UpdateFn(id, t)
 }
 
+// Create mock implementation
 func (s *TagService) Create(ctx context.Context, t *lara.CreateTag) (uint64, error) {
 	s.CreateInvoked = true
 	return s.CreateFn(t)

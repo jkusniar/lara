@@ -25,7 +25,7 @@ import (
 	"github.com/jkusniar/lara"
 )
 
-// SearchService mock implementation
+// SearchService is mock implementation of lara.SearchService
 type SearchService struct {
 	SearchFn        func(q string) (*lara.SearchResult, error)
 	SearchFnInvoked bool

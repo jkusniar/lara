@@ -15,17 +15,15 @@ dev-deps:
 
 # call golint on all packages except vendor folder
 lint:
-	@set -e; \
 	for p in $$(go list ./... | grep -v /vendor/); do \
 		golint $$p ;\
 	done
 
 # call go vet on all packages except vendor folder
 vet:
-	@set -e; \
-    for p in $$(go list ./... | grep -v /vendor/); do \
-    	go vet $$p || exit 1 ;\
-    done
+	for p in $$(go list ./... | grep -v /vendor/); do \
+		go vet $$p ;\
+	done
 
 # build executables on default arch
 build:

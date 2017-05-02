@@ -25,7 +25,7 @@ import (
 	"github.com/jkusniar/lara"
 )
 
-// ReportService mock implementation
+// ReportService is mock implementation of lara.ReportService
 type ReportService struct {
 	GetIncomeStatisticsFn func(
 		r *lara.ReportRequest) (*lara.IncomeStatistics, error)

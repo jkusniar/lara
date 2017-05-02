@@ -27,13 +27,13 @@ import (
 // -----------------------------------------------------------------------------
 // PATIENT'S TAG MANAGEMENT SERVICE
 
-// TagType is enum defining system permissions
+// TagType defines patient's tag type
 //go:generate stringer -type=TagType -output tag_string.go
 //requires golang.org/x/tools/cmd/stringer installed locally
 //if new object permission added to enum, run "go generate"
 type TagType int
 
-// Permissions enum
+// Tag types enum
 const (
 	LyssaVirus  TagType = iota // Canine Rabies Tags, tag format: YYYY-SK-9999
 	Tattoo                     // Pet tattoo, tag format: regular string
@@ -60,6 +60,7 @@ func (i *TagType) FromString(tt string) error {
 	return nil
 }
 
+// GetTag is JSON encoded retrievable tag data
 type GetTag struct {
 	Versioned
 	CreatorModifier
@@ -68,6 +69,7 @@ type GetTag struct {
 	Data  []byte `json:"data"`
 }
 
+// CreateTag is JSON encoded create tag data
 type CreateTag struct {
 	PatientID uint64 `json:"patientId"`
 	Type      string `json:"type"`
@@ -75,12 +77,14 @@ type CreateTag struct {
 	Data      []byte `json:"data"`
 }
 
+// UpdateTag is JSON encoded update tag data
 type UpdateTag struct {
 	Version uint64 `json:"version"`
 	Value   string `json:"value"`
 	Data    []byte `json:"data"`
 }
 
+// PatientByTag is JSON encoded patient's data found by tag value
 type PatientByTag struct {
 	TagType      string `json:"tagType"`
 	Name         string `json:"name"`
@@ -92,6 +96,7 @@ type PatientByTag struct {
 	OwnerAddress string `json:"ownerAddress"` // owner's address
 }
 
+// TagService manages patient's tags
 type TagService interface {
 	Get(ctx context.Context, id uint64) (*GetTag, error)
 	Update(ctx context.Context, id uint64, o *UpdateTag) error

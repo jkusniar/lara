@@ -25,6 +25,7 @@ import (
 	"github.com/jkusniar/lara"
 )
 
+// RecordService is mock implementation of lara.RecordService
 type RecordService struct {
 	GetFn      func(id uint64) (*lara.GetRecord, error)
 	GetInvoked bool
@@ -36,16 +37,19 @@ type RecordService struct {
 	UpdateInvoked bool
 }
 
+// Get mock implementation
 func (s *RecordService) Get(ctx context.Context, id uint64) (*lara.GetRecord, error) {
 	s.GetInvoked = true
 	return s.GetFn(id)
 }
 
+// Update mock implementation
 func (s *RecordService) Update(ctx context.Context, id uint64, r *lara.UpdateRecord) error {
 	s.UpdateInvoked = true
 	return s.UpdateFn(id, r)
 }
 
+// Create mock implementation
 func (s *RecordService) Create(ctx context.Context, r *lara.CreateRecord) (uint64, error) {
 	s.CreateInvoked = true
 	return s.CreateFn(r)

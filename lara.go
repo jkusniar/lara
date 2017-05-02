@@ -97,18 +97,20 @@ type CreateOwner struct {
 	Patient NewPatient `json:"patient"`
 }
 
-// NewPatient is JSON encoded data of patient created together with an owner
+// NewPatient is JSON encoded data of a patient created together with an owner
 type NewPatient struct {
 	Patient
 	Record NewRecord `json:"record"`
 }
 
+// NewRecord is JSON encoded data of a record created together with an owner
 type NewRecord struct {
 	Text   string       `json:"text"`
 	Billed bool         `json:"billed"`
 	Items  []RecordItem `json:"items"`
 }
 
+// RecordItem is JSON encoded data od record's item containing all writable data
 type RecordItem struct {
 	ProductID    uint64         `json:"productId"`
 	ProductPrice string         `json:"productPrice"`
@@ -127,7 +129,7 @@ type OwnerService interface {
 // -----------------------------------------------------------------------------
 // PATIENT MANAGEMENT SERVICE
 
-// Patient updatable fields
+// Patient is JSON encoded updatable patient fields
 type Patient struct {
 	Name      string    `json:"name"`
 	BirthDate time.Time `json:"birthDate"`
@@ -137,6 +139,7 @@ type Patient struct {
 	Note      string    `json:"note"`
 }
 
+// GetPatient is JSON encoded retrievable patient data
 type GetPatient struct {
 	Versioned
 	CreatorModifier
@@ -149,29 +152,34 @@ type GetPatient struct {
 	Tags    []PatientsTag    `json:"tags"`
 }
 
+// PatientsRecord is JSON encoded patient's record data
 type PatientsRecord struct {
 	ID   uint64    `json:"id"`
 	Date time.Time `json:"date"`
 	Text string    `json:"text"`
 }
 
+// PatientsTag is JSON encoded patient's tag data
 type PatientsTag struct {
 	ID    uint64 `json:"id"`
 	Type  string `json:"type"`
 	Value string `json:"value"`
 }
 
+// CreatePatient is JSON encoded create patient data
 type CreatePatient struct {
 	OwnerID uint64 `json:"ownerId"`
 	NewPatient
 }
 
+// UpdatePatient is JSON encoded update patient data
 type UpdatePatient struct {
 	Version uint64 `json:"version"`
 	Patient
 	Dead bool `json:"dead"`
 }
 
+// PatientService manages patients
 type PatientService interface {
 	Get(ctx context.Context, id uint64) (*GetPatient, error)
 	Update(ctx context.Context, id uint64, p *UpdatePatient) error
@@ -192,10 +200,12 @@ const (
 	Material
 )
 
+// MarshalJSON is JSON marshaller implementation for RecordItemType
 func (i RecordItemType) MarshalJSON() ([]byte, error) {
 	return json.Marshal(i.String())
 }
 
+// UnmarshalJSON is JSON unmarshaller implementation for RecordItemType
 func (i *RecordItemType) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
@@ -215,6 +225,7 @@ func (i *RecordItemType) UnmarshalJSON(data []byte) error {
 
 }
 
+// GetRecord is JSON encoded retrievable record data
 type GetRecord struct {
 	Versioned
 	CreatorModifier
@@ -225,6 +236,7 @@ type GetRecord struct {
 	Total  string          `json:"total"`
 }
 
+// GetRecordItem is JSON encoded retrievable record item data
 type GetRecordItem struct {
 	ID uint64 `json:"id"`
 	RecordItem
@@ -233,17 +245,20 @@ type GetRecordItem struct {
 	PLU     string `json:"plu"`
 }
 
+// CreateRecord is JSON encoded create record data
 type CreateRecord struct {
 	PatientID uint64 `json:"patientId"`
 	NewRecord
 }
 
+// UpdateRecord is JSON encoded update record data
 type UpdateRecord struct {
 	Version uint64       `json:"version"`
 	Text    string       `json:"text"`
 	Items   []RecordItem `json:"items"`
 }
 
+// RecordService manages records
 type RecordService interface {
 	Get(ctx context.Context, id uint64) (*GetRecord, error)
 	Update(ctx context.Context, id uint64, r *UpdateRecord) error
@@ -259,14 +274,14 @@ type SearchResult struct {
 	Records []SearchRecord `json:"records"`
 }
 
-// SearchRecord is JSON encoded search result
+// SearchRecord is JSON encoded search record (owner)
 type SearchRecord struct {
 	ID      uint64 `json:"id"`      // DB primary key
 	Name    string `json:"name"`    // formatted owner name (first, last, title)
 	Address string `json:"address"` // owner's address
 }
 
-// SearchService searches owners/pets
+// SearchService searches owners
 type SearchService interface {
 	Search(ctx context.Context, q string) (*SearchResult, error)
 }
@@ -274,48 +289,56 @@ type SearchService interface {
 // -----------------------------------------------------------------------------
 // LIST OF VALUES MANAGEMENT SERVICES
 
+// LOVItem is JSON encoded List-Of-Values item
 type LOVItem struct {
 	ID   uint64 `json:"id"`
 	Name string `json:"name"`
 }
 
+// LOVItemList is JSON encoded list of of LOVItems
 type LOVItemList struct {
 	Items []LOVItem `json:"items"`
 }
 
+// TitleService manages titles
 type TitleService interface {
 	GetAllTitles(ctx context.Context) (*LOVItemList, error)
 }
 
+// UnitService manages units
 type UnitService interface {
 	GetAllUnits(ctx context.Context) (*LOVItemList, error)
 }
 
+// GenderService manages genders
 type GenderService interface {
 	GetAllGenders(ctx context.Context) (*LOVItemList, error)
 }
 
+// SpeciesService manages species
 type SpeciesService interface {
 	GetAllSpecies(ctx context.Context) (*LOVItemList, error)
 }
 
+// BreedService manages breeds
 type BreedService interface {
 	GetAllBreedsBySpecies(ctx context.Context, speciesID uint64) (*LOVItemList, error)
 }
 
-// City or street
+// CityStreet is JSON encoded city or street structure
 type CityStreet struct {
 	ID   uint64 `json:"id"`
 	Name string `json:"name"`
 	ZIP  string `json:"zip"`
 }
 
-// List of cities/streets
+// CityStreetList is JSON encoded List of cities/streets
 type CityStreetList struct {
 	Total int          `json:"total"`
 	Items []CityStreet `json:"items"`
 }
 
+// AddressService manages addresses
 type AddressService interface {
 	SearchCity(ctx context.Context, query string) (*CityStreetList, error)
 	SearchStreetForCity(ctx context.Context, cityID uint64, query string) (*CityStreetList, error)
@@ -332,13 +355,13 @@ type Product struct {
 	Price string `json:"price"` // product's price (formatted decimal, precision: 8.2)
 }
 
-// ProductSearchResult is JSON encoded search Product result structure
+// ProductSearchResult is JSON encoded search product result structure
 type ProductSearchResult struct {
 	Total    int       `json:"total"`
 	Products []Product `json:"products"`
 }
 
-// ProductSearchRequest is JSON encoded search Product request structure
+// ProductSearchRequest is JSON encoded search product request structure
 type ProductSearchRequest struct {
 	ValidTo time.Time `json:"validTo"`
 	Query   string    `json:"query"`
@@ -358,7 +381,7 @@ type ReportRequest struct {
 	ValidTo   time.Time `json:"validTo"`
 }
 
-// IncomeStatistics is JSON encoded income statistics
+// IncomeStatistics is JSON encoded income statistics report
 type IncomeStatistics struct {
 	Records         int    `json:"records"`         // count
 	Income          string `json:"income"`          // currency (formatted decimal, precision: 8.2)
@@ -366,7 +389,7 @@ type IncomeStatistics struct {
 	IncomeNotBilled string `json:"incomeNotBilled"` // currency
 }
 
-// ReportService generates data for reports
+// ReportService generates data for various reports
 type ReportService interface {
 	GetIncomeStatistics(ctx context.Context, r *ReportRequest) (*IncomeStatistics, error)
 }

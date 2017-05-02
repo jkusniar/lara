@@ -27,7 +27,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// OwnerService is lara.OwnerService implementation backed by postgresql
+// OwnerService is implementation of lara.OwnerService using postgresql database
 type OwnerService struct {
 	DB *sql.DB
 }
@@ -111,7 +111,8 @@ func (p *ownersPatientDTO) toOwnersPatient() *lara.OwnersPatient {
 	}
 }
 
-// GetOwner returns GetOwner data by ID. If not found, returns nil, nil.
+// Get is  implementation of OwnerService.Get using postgresql database.
+// Returns GetOwner data by ID.
 func (s *OwnerService) Get(ctx context.Context, id uint64) (*lara.GetOwner, error) {
 	const q = `SELECT
 			  o.id,
@@ -220,7 +221,7 @@ func (s *OwnerService) getOwnersPatients(ctx context.Context, oid uint64) ([]own
 	return patients, errors.Wrap(err, "rows processing errror")
 }
 
-// UpdateOwner updates owner in database. Returns true if successfuly updated.
+// Update is  implementation of OwnerService.Update using postgresql database.
 func (s *OwnerService) Update(ctx context.Context, id uint64, o *lara.UpdateOwner) error {
 	if len(o.LastName) == 0 {
 		return requiredFieldError("lastName")
@@ -299,7 +300,8 @@ func (s *OwnerService) Update(ctx context.Context, id uint64, o *lara.UpdateOwne
 	return err
 }
 
-// CreateOwner creates new owner in database and returns its ID
+// Create is  implementation of OwnerService.Create using postgresql database.
+// Creates new owner in database and returns its ID.
 func (s *OwnerService) Create(ctx context.Context, o *lara.CreateOwner) (uint64, error) {
 	const insert = `INSERT INTO owner (first_name, last_name, title_id, city_id, street_id, house_no,
 		                    phone_1, phone_2, email, note, ic, dic, icdph, creator, created)
