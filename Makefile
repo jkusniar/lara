@@ -13,13 +13,19 @@ dev-deps:
 	go get -u -v github.com/kardianos/govendor
 	go get -u -v golang.org/x/tools/cmd/stringer
 
-# call golint on sources
+# call golint on all packages except vendor folder. STRICT (fails on error)
 lint:
-	for p in $$(go list ./... | grep -v /vendor/); do golint $$p; done
+	@set -e; \
+	for p in $$(go list ./... | grep -v /vendor/); do \
+		golint -set_exit_status $$p || exit 1 ;\
+	done
 
-# call go vet on sources
+# call go vet on all packages except vendor folder
 vet:
-	for p in $$(go list ./... | grep -v /vendor/); do go vet $$p; done
+	@set -e; \
+    for p in $$(go list ./... | grep -v /vendor/); do \
+    	go vet $$p || exit 1 ;\
+    done
 
 # build executables on default arch
 build:
