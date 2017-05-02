@@ -27,6 +27,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// AddressService is implementation of lara.AddressService using postgresql database
 type AddressService struct {
 	DB *sql.DB
 }
@@ -57,6 +58,7 @@ func (s *AddressService) searchCityOrStreet(ctx context.Context,
 	return &result, errors.Wrap(err, "rows processing errror")
 }
 
+// SearchCity is implementation of AddressService.SearchCity using postgresql database.
 // TODO make search limit parametric
 func (s *AddressService) SearchCity(ctx context.Context, query string) (*lara.CityStreetList, error) {
 	const cq = `SELECT count(*) FROM lov_city WHERE  city ILIKE $1`
@@ -72,6 +74,7 @@ func (s *AddressService) SearchCity(ctx context.Context, query string) (*lara.Ci
 	return s.searchCityOrStreet(ctx, cq, dq, "%"+query+"%", 30)
 }
 
+// SearchStreetForCity is implementation of AddressService.SearchStreetForCity using postgresql database
 func (s *AddressService) SearchStreetForCity(ctx context.Context, cityID uint64, query string) (*lara.CityStreetList, error) {
 	const cq = `SELECT count(*) FROM lov_street WHERE city_id = $1 AND street ILIKE $2`
 	const dq = `SELECT

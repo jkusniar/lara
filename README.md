@@ -5,7 +5,7 @@
 
 Veterinary practice support software - back-end services.
 
-## Build
+## Install
 
 Requires go 1.8+
 
@@ -19,7 +19,21 @@ go install github.com/jkusniar/lara/cmd/lara-ctl
 Runtime requirements:
 * system timezone is used to translate date/time strings in application
 
+## Development
+
+Requires GNU make. Install build dependencies if building first time:
+
+* `make build-deps`
+* `make`
+
+Will install build dependencies and run golint/go vet, unit tests and build binaries.
+Optionally install additional development dependencies using `make dev-deps`.
+
 ## Tests
+
+```
+make test
+```
 
 In order to run tests on local machine a postgresql instance 
 must be running. Following environment variables are honored for tests:
@@ -29,13 +43,6 @@ must be running. Following environment variables are honored for tests:
 * `POSTGRES_USER` (default "postgres")
 * `POSTGRES_PASSWORD` (default "")
 * `POSTGRES_PORT` (default 5432)
-
-Testing packages are:
-
-* `http_test`
-* `crypto_test`
-* `postgres`
-* `postgres_test` (requires local database instance)
 
 # License
 

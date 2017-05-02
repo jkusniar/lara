@@ -58,6 +58,7 @@ func (t *tagDTO) toGetTag() *lara.GetTag {
 	}
 }
 
+// Get is implementation of TagService.Get using postgresql database.
 func (s *TagService) Get(ctx context.Context, id uint64) (*lara.GetTag, error) {
 	const q = `SELECT
 			  t.id,
@@ -94,6 +95,7 @@ func (s *TagService) Get(ctx context.Context, id uint64) (*lara.GetTag, error) {
 	return t.toGetTag(), nil
 }
 
+// Update is implementation of TagService.Update using postgresql database.
 func (s *TagService) Update(ctx context.Context, id uint64, t *lara.UpdateTag) error {
 	if len(t.Value) == 0 {
 		return requiredFieldError("value")
@@ -150,6 +152,7 @@ func (s *TagService) Update(ctx context.Context, id uint64, t *lara.UpdateTag) e
 	return err
 }
 
+// Create is implementation of TagService.Create using postgresql database.
 func (s *TagService) Create(ctx context.Context, t *lara.CreateTag) (uint64, error) {
 	if len(t.Value) == 0 {
 		return 0, requiredFieldError("value")
@@ -173,14 +176,14 @@ func (s *TagService) Create(ctx context.Context, t *lara.CreateTag) (uint64, err
 		const insert = `INSERT INTO tag (patient_id, tag_type_id, value, data, creator, created)
 					VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`
 
-		ttId, err := getOrCreateTagType(ctx, tx, t.Type)
+		ttID, err := getOrCreateTagType(ctx, tx, t.Type)
 		if err != nil {
 			return err
 		}
 
 		err = tx.QueryRowContext(ctx, insert,
 			toNullFK(t.PatientID),
-			ttId,
+			ttID,
 			toNullString(t.Value),
 			t.Data,
 			toNullString(u.Login),
@@ -193,23 +196,23 @@ func (s *TagService) Create(ctx context.Context, t *lara.CreateTag) (uint64, err
 }
 
 func getOrCreateTagType(ctx context.Context, tx *sql.Tx, tagType string) (uint64, error) {
-	var ttId uint64
+	var ttID uint64
 
 	var tt lara.TagType
 	if err := tt.FromString(tagType); err != nil {
-		return ttId, lara.NewCodedError(400, errors.Errorf("invalid TagType %s", tagType))
+		return ttID, lara.NewCodedError(400, errors.Errorf("invalid TagType %s", tagType))
 	}
 
-	err := tx.QueryRowContext(ctx, `SELECT id FROM tag_type WHERE name = $1`, tt.String()).Scan(&ttId)
+	err := tx.QueryRowContext(ctx, `SELECT id FROM tag_type WHERE name = $1`, tt.String()).Scan(&ttID)
 	if err == sql.ErrNoRows {
 		err = tx.QueryRowContext(ctx, `INSERT INTO tag_type (name) VALUES($1) RETURNING id`,
-			tt.String()).Scan(&ttId)
+			tt.String()).Scan(&ttID)
 	}
 
-	return ttId, errors.Wrap(err, "get or create TagType failed")
+	return ttID, errors.Wrap(err, "get or create TagType failed")
 }
 
-type PatientByTagDTO struct {
+type patientByTagDTO struct {
 	TagType string
 	Name    string
 	Species sql.NullString
@@ -220,12 +223,13 @@ type PatientByTagDTO struct {
 	OwnerAddressDTO
 }
 
-func (p *PatientByTagDTO) toPatientByTag() *lara.PatientByTag {
+func (p *patientByTagDTO) toPatientByTag() *lara.PatientByTag {
 	return &lara.PatientByTag{TagType: p.TagType,
 		Name: p.Name, Species: p.Species.String, Breed: p.Breed.String, Gender: p.Gender.String,
 		OwnerID: p.OwnerID, OwnerName: p.OwnerNameDTO.String(), OwnerAddress: p.OwnerAddressDTO.String()}
 }
 
+// GetPatientByTag is implementation of TagService.GetPatientByTag using postgresql database.
 func (s *TagService) GetPatientByTag(ctx context.Context, tagValue string) (*lara.PatientByTag, error) {
 	const q = `SELECT
 			  tt.name  AS tagType,
@@ -252,7 +256,7 @@ func (s *TagService) GetPatientByTag(ctx context.Context, tagValue string) (*lar
 			  LEFT JOIN lov_breed b ON b.id = p.breed_id
 			WHERE t.value = $1`
 
-	var p PatientByTagDTO
+	var p patientByTagDTO
 	err := s.DB.QueryRowContext(ctx, q, tagValue).Scan(
 		&p.TagType, &p.Name, &p.Species, &p.Breed, &p.Gender, &p.OwnerID,
 		&p.FirstName, &p.LastName, &p.Title, &p.City,

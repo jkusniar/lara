@@ -25,6 +25,7 @@ import (
 	"github.com/jkusniar/lara"
 )
 
+// AddressService is mock implementation of lara.AddressService
 type AddressService struct {
 	SearchCityFn      func(query string) (*lara.CityStreetList, error)
 	SearchCityInvoked bool
@@ -33,11 +34,13 @@ type AddressService struct {
 	SearchStreetForCityInvoked bool
 }
 
+// SearchCity mock implementation
 func (s *AddressService) SearchCity(ctx context.Context, query string) (*lara.CityStreetList, error) {
 	s.SearchCityInvoked = true
 	return s.SearchCityFn(query)
 }
 
+// SearchStreetForCity mock implementation
 func (s *AddressService) SearchStreetForCity(ctx context.Context, cityID uint64, query string) (*lara.CityStreetList, error) {
 	s.SearchStreetForCityInvoked = true
 	return s.SearchStreetForCityFn(cityID, query)

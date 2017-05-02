@@ -163,16 +163,17 @@ func grantUserPermission(ctx context.Context, tx *sql.Tx, uid uint64, perm lara.
 	return errors.Wrap(err, "create user_permission failed")
 }
 
-func getUserIdByLogin(ctx context.Context, tx *sql.Tx, login string) (uint64, error) {
+func getUserIDByLogin(ctx context.Context, tx *sql.Tx, login string) (uint64, error) {
 	var uid uint64
 	err := tx.QueryRowContext(ctx, `SELECT ID FROM "user" WHERE login = $1`, login).Scan(&uid)
 
 	return uid, errors.Wrap(err, "get user id by login error")
 }
 
+// Grant supplies user with a specified list of permissions
 func (s *UserService) Grant(ctx context.Context, login string, permissions []lara.PermissionType) error {
 	err := execInTransaction(ctx, s.DB, func(tx *sql.Tx) error {
-		uid, err := getUserIdByLogin(ctx, tx, login)
+		uid, err := getUserIDByLogin(ctx, tx, login)
 		if err != nil {
 			return err
 		}
@@ -188,9 +189,11 @@ func (s *UserService) Grant(ctx context.Context, login string, permissions []lar
 
 	return err
 }
+
+// Revoke removes supplied permissions from user
 func (s *UserService) Revoke(ctx context.Context, login string, permissions []lara.PermissionType) error {
 	err := execInTransaction(ctx, s.DB, func(tx *sql.Tx) error {
-		uid, err := getUserIdByLogin(ctx, tx, login)
+		uid, err := getUserIDByLogin(ctx, tx, login)
 		if err != nil {
 			return err
 		}

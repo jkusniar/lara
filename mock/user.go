@@ -25,7 +25,7 @@ import (
 	"github.com/jkusniar/lara"
 )
 
-// UserService mock implementation
+// UserService is mock implementation of lara.UserService
 type UserService struct {
 	AuthenticateFn      func(login, password string) (*lara.User, error)
 	AuthenticateInvoked bool
@@ -46,9 +46,12 @@ func (s *UserService) Register(ctx context.Context, login, password string, perm
 	return s.RegisterFn(login, password, permissions)
 }
 
+// Grant mock implementation
 func (s *UserService) Grant(ctx context.Context, login string, permissions []lara.PermissionType) error {
 	return nil
 }
+
+// Revoke mock implementation
 func (s *UserService) Revoke(ctx context.Context, login string, permissions []lara.PermissionType) error {
 	return nil
 }

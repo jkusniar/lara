@@ -28,6 +28,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+// SimpleLovService is implementation of lara.TitleService, lara.UnitService, lara.GenderService,
+// lara.SpeciesService, lara.BreedService using postgresql database.
 type SimpleLovService struct {
 	DB *sql.DB
 }
@@ -83,22 +85,27 @@ func lovGetAll(ctx context.Context, db *sql.DB, lov listOfValuesType, params ...
 	return &result, errors.Wrap(err, "rows processing errror")
 }
 
+// GetAllTitles is implementation of TitleService.GetAllTitles using postgresql database.
 func (s *SimpleLovService) GetAllTitles(ctx context.Context) (*lara.LOVItemList, error) {
 	return lovGetAll(ctx, s.DB, title)
 }
 
+// GetAllUnits is implementation of UnitService.GetAllUnits using postgresql database.
 func (s *SimpleLovService) GetAllUnits(ctx context.Context) (*lara.LOVItemList, error) {
 	return lovGetAll(ctx, s.DB, unit)
 }
 
+// GetAllSpecies is implementation of SpeciesService.GetAllSpecies using postgresql database.
 func (s *SimpleLovService) GetAllSpecies(ctx context.Context) (*lara.LOVItemList, error) {
 	return lovGetAll(ctx, s.DB, species)
 }
 
+// GetAllGenders is implementation of GenderService.GetAllGenders using postgresql database.
 func (s *SimpleLovService) GetAllGenders(ctx context.Context) (*lara.LOVItemList, error) {
 	return lovGetAll(ctx, s.DB, gender)
 }
 
+// GetAllBreedsBySpecies is implementation of BreedService.GetAllBreedsBySpecies using postgresql database.
 func (s *SimpleLovService) GetAllBreedsBySpecies(ctx context.Context, speciesID uint64) (*lara.LOVItemList, error) {
 	return lovGetAll(ctx, s.DB, breed, speciesID)
 }

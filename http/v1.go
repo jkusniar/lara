@@ -48,7 +48,7 @@ const (
 	tag
 )
 
-func parseId(r *http.Request) (uint64, error) {
+func parseID(r *http.Request) (uint64, error) {
 	return strconv.ParseUint(chi.URLParam(r, "id"), 10, 64)
 }
 
@@ -67,7 +67,7 @@ func (s *Server) searchHandler(w http.ResponseWriter, r *http.Request) {
 
 // getOwnerHandler returns JSON formatted GetOwner data by ID
 func (s *Server) getOwnerHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := parseId(r)
+	id, err := parseID(r)
 	if err != nil {
 		renderNotFoundError(w, r, owner, err)
 		return
@@ -110,7 +110,7 @@ func (s *Server) updateOwnerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := parseId(r)
+	id, err := parseID(r)
 	if err != nil {
 		renderNotFoundError(w, r, owner, err)
 		return
@@ -157,7 +157,7 @@ func (s *Server) getIncomeStatisticsHandler(w http.ResponseWriter, r *http.Reque
 
 // getPatientHandler returns JSON formatted GetPatient data by ID
 func (s *Server) getPatientHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := parseId(r)
+	id, err := parseID(r)
 	if err != nil {
 		renderNotFoundError(w, r, patient, err)
 		return
@@ -187,7 +187,7 @@ func (s *Server) searchPatientByTagHandler(w http.ResponseWriter, r *http.Reques
 
 // getRecordHandler returns JSON formatted GetRecord data by ID
 func (s *Server) getRecordHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := parseId(r)
+	id, err := parseID(r)
 	if err != nil {
 		renderNotFoundError(w, r, record, err)
 		return
@@ -248,7 +248,7 @@ func (s *Server) updatePatientHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := parseId(r)
+	id, err := parseID(r)
 	if err != nil {
 		renderNotFoundError(w, r, patient, err)
 		return
@@ -269,7 +269,7 @@ func (s *Server) updateRecordHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := parseId(r)
+	id, err := parseID(r)
 	if err != nil {
 		renderNotFoundError(w, r, record, err)
 		return
@@ -326,7 +326,7 @@ func (s *Server) getAllSpeciesHandler(w http.ResponseWriter, r *http.Request) {
 
 // getAllBreedsBySpeciesHandler returns JSON formatted breed data by species ID
 func (s *Server) getAllBreedsBySpeciesHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := parseId(r)
+	id, err := parseID(r)
 	if err != nil {
 		renderNotFoundError(w, r, breed, err)
 		return
@@ -358,7 +358,7 @@ func (s *Server) searchCityHandler(w http.ResponseWriter, r *http.Request) {
 func (s *Server) searchStreetByCityHandler(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query().Get("q")
 
-	cityID, err := parseId(r)
+	cityID, err := parseID(r)
 	if err != nil {
 		renderNotFoundError(w, r, city, err)
 		return
@@ -375,7 +375,7 @@ func (s *Server) searchStreetByCityHandler(w http.ResponseWriter, r *http.Reques
 
 // getTagHandler returns JSON formatted GetTag data by ID
 func (s *Server) getTagHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := parseId(r)
+	id, err := parseID(r)
 	if err != nil {
 		renderNotFoundError(w, r, tag, err)
 		return
@@ -418,7 +418,7 @@ func (s *Server) updateTagHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := parseId(r)
+	id, err := parseID(r)
 	if err != nil {
 		renderNotFoundError(w, r, tag, err)
 		return

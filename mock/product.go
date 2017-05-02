@@ -25,7 +25,7 @@ import (
 	"github.com/jkusniar/lara"
 )
 
-// ProductService mock implementation
+// ProductService mock implementation of lara.ProductService
 type ProductService struct {
 	SearchFn func(p *lara.ProductSearchRequest) (*lara.ProductSearchResult,
 		error)

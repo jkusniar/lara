@@ -29,6 +29,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// RecordService is implementation of lara.RecordService using postgresql database
 type RecordService struct {
 	DB *sql.DB
 }
@@ -61,6 +62,7 @@ func (r *recordDTO) toGetRecord(total string, items []lara.GetRecordItem) *lara.
 	}
 }
 
+// Get is implementation of RecordService.Get using postgresql database.
 func (s *RecordService) Get(ctx context.Context, id uint64) (*lara.GetRecord, error) {
 	const q = `SELECT
 			  id,
@@ -171,6 +173,7 @@ func (s *RecordService) sumItemsForRecord(ctx context.Context, id uint64) (strin
 	return sum.String, nil
 }
 
+// Create is implementation of RecordService.Create using postgresql database.
 func (s *RecordService) Create(ctx context.Context, r *lara.CreateRecord) (uint64, error) {
 	var recID uint64
 	err := execInTransaction(ctx, s.DB, func(tx *sql.Tx) (err error) {
@@ -237,6 +240,7 @@ func createRecordItems(ctx context.Context, tx *sql.Tx, recID uint64, items []la
 	return nil
 }
 
+// Update is implementation of RecordService.Update using postgresql database.
 func (s *RecordService) Update(ctx context.Context, id uint64, r *lara.UpdateRecord) error {
 	if err := validateRecordItems(r.Items); err != nil {
 		return err

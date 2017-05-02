@@ -25,7 +25,7 @@ import (
 	"github.com/jkusniar/lara"
 )
 
-// OwnerService mock implementation
+// OwnerService is mock implementation of lara.OwnerService
 type OwnerService struct {
 	GetFn      func(id uint64) (*lara.GetOwner, error)
 	GetInvoked bool

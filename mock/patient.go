@@ -25,6 +25,7 @@ import (
 	"github.com/jkusniar/lara"
 )
 
+// PatientService is mock implementation of lara.PatientService
 type PatientService struct {
 	GetFn      func(id uint64) (*lara.GetPatient, error)
 	GetInvoked bool
@@ -36,16 +37,19 @@ type PatientService struct {
 	CreateInvoked bool
 }
 
+// Update mock implementation
 func (s *PatientService) Update(ctx context.Context, id uint64, p *lara.UpdatePatient) error {
 	s.UpdateInvoked = true
 	return s.UpdateFn(id, p)
 }
 
+// Create mock implementation
 func (s *PatientService) Create(ctx context.Context, p *lara.CreatePatient) (uint64, error) {
 	s.CreateInvoked = true
 	return s.CreateFn(p)
 }
 
+// Get mock implementation
 func (s *PatientService) Get(ctx context.Context, id uint64) (*lara.GetPatient, error) {
 	s.GetInvoked = true
 	return s.GetFn(id)

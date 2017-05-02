@@ -5,3 +5,6 @@ go:
 
 services:
   - postgresql
+
+install:
+  - make build-deps

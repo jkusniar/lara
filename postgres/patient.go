@@ -29,6 +29,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// PatientService is implementation of lara.PatientService using postgresql database
 type PatientService struct {
 	DB *sql.DB
 }
@@ -99,6 +100,7 @@ func (p *patientsRecordDTO) toPatientsRecord() *lara.PatientsRecord {
 	return &result
 }
 
+// Get is implementation of PatientService.Get using postgresql database.
 func (s *PatientService) Get(ctx context.Context, id uint64) (*lara.GetPatient, error) {
 	const q = `SELECT
 			  p.id,
@@ -222,6 +224,7 @@ func (s *PatientService) getPatientsTags(ctx context.Context, id uint64) ([]lara
 	return tags, errors.Wrap(err, "rows processing errror")
 }
 
+// Create is implementation of PatientService.Create using postgresql database.
 func (s *PatientService) Create(ctx context.Context, p *lara.CreatePatient) (uint64, error) {
 	var pID uint64
 	err := execInTransaction(ctx, s.DB, func(tx *sql.Tx) (err error) {
@@ -270,6 +273,7 @@ func createPatientTx(ctx context.Context, tx *sql.Tx, p *lara.CreatePatient) (ui
 	return pID, err
 }
 
+// Update is implementation of PatientService.Update using postgresql database.
 func (s *PatientService) Update(ctx context.Context, id uint64, p *lara.UpdatePatient) error {
 	if len(p.Name) == 0 {
 		return requiredFieldError("name")
