@@ -5,7 +5,7 @@
 
 Veterinary practice support software - back-end services.
 
-## Build
+## Install
 
 Requires go 1.8+
 
@@ -21,6 +21,10 @@ Runtime requirements:
 
 ## Tests
 
+```
+make test
+```
+
 In order to run tests on local machine a postgresql instance 
 must be running. Following environment variables are honored for tests:
 
@@ -30,12 +34,15 @@ must be running. Following environment variables are honored for tests:
 * `POSTGRES_PASSWORD` (default "")
 * `POSTGRES_PORT` (default 5432)
 
-Testing packages are:
+## Development
 
-* `http_test`
-* `crypto_test`
-* `postgres`
-* `postgres_test` (requires local database instance)
+Requires GNU make. Install build dependencies if building first time:
+
+* `make build-deps`
+* `make`
+
+Will install build dependencies and run golint/go vet, unit tests and build binaries.
+Optionally install additional development dependencies using `make dev-deps`.
 
 # License
 
