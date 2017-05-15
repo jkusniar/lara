@@ -21,7 +21,7 @@ Runtime requirements:
 
 ## Development
 
-Requires GNU make. Install build dependencies if building first time:
+Requires `make` utility. Install build dependencies if building first time:
 
 * `make build-deps`
 * `make`
