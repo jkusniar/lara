@@ -10,8 +10,8 @@
 
 .idea
 
-lara
-lara-ctl
+/lara
+/lara-ctl
 dist/openbsd/lara
 dist/openbsd/lara-ctl
 
