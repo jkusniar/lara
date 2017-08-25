@@ -22,8 +22,8 @@ package main
 import (
 	"io/ioutil"
 
+	"github.com/go-chi/chi/docgen"
 	"github.com/jkusniar/lara/http"
-	"github.com/pressly/chi/docgen"
 )
 
 // generates http routes doc - routes.md

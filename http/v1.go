@@ -24,9 +24,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/render"
 	"github.com/jkusniar/lara"
-	"github.com/pressly/chi"
-	"github.com/pressly/chi/render"
 )
 
 //go:generate stringer -type=objectType -output obj_string.go

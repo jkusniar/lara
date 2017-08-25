@@ -24,8 +24,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-chi/chi/render"
 	"github.com/pkg/errors"
-	"github.com/pressly/chi/render"
 )
 
 func renderBadJSONError(w http.ResponseWriter, r *http.Request, err error) {

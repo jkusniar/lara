@@ -25,11 +25,12 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/render"
 	"github.com/jkusniar/lara"
-	"github.com/pressly/chi"
-	"github.com/pressly/chi/middleware"
-	"github.com/pressly/chi/render"
 )
 
 // Server server REST API and client web application
@@ -73,7 +74,7 @@ func (s *Server) Router() *chi.Mux {
 	// At least for public routes.
 
 	// serve web app
-	r.FileServer("/", http.Dir(s.WWWRoot))
+	fileServer(r, "/", http.Dir(s.WWWRoot))
 
 	//heartbeat
 	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +89,7 @@ func (s *Server) Router() *chi.Mux {
 		// owner
 		r.Route("/owner", func(r chi.Router) {
 			r.With(requirePermission(lara.EditRecord)).Post("/", s.createOwnerHandler)
-			r.Route("/:id", func(r chi.Router) {
+			r.Route("/{id}", func(r chi.Router) {
 				r.With(requirePermission(lara.ViewRecord)).Get("/", s.getOwnerHandler)
 				r.With(requirePermission(lara.EditRecord)).Put("/", s.updateOwnerHandler)
 			})
@@ -97,7 +98,7 @@ func (s *Server) Router() *chi.Mux {
 		// patient
 		r.Route("/patient", func(r chi.Router) {
 			r.With(requirePermission(lara.EditRecord)).Post("/", s.createPatientHandler)
-			r.Route("/:id", func(r chi.Router) {
+			r.Route("/{id}", func(r chi.Router) {
 				r.With(requirePermission(lara.ViewRecord)).Get("/", s.getPatientHandler)
 				r.With(requirePermission(lara.EditRecord)).Put("/", s.updatePatientHandler)
 			})
@@ -106,7 +107,7 @@ func (s *Server) Router() *chi.Mux {
 		// record
 		r.Route("/record", func(r chi.Router) {
 			r.With(requirePermission(lara.EditRecord)).Post("/", s.createRecordHandler)
-			r.Route("/:id", func(r chi.Router) {
+			r.Route("/{id}", func(r chi.Router) {
 				r.With(requirePermission(lara.ViewRecord)).Get("/", s.getRecordHandler)
 				r.With(requirePermission(lara.EditRecord)).Put("/", s.updateRecordHandler)
 			})
@@ -115,7 +116,7 @@ func (s *Server) Router() *chi.Mux {
 		// tags
 		r.Route("/tag", func(r chi.Router) {
 			r.With(requirePermission(lara.EditRecord)).Post("/", s.createTagHandler)
-			r.Route("/:id", func(r chi.Router) {
+			r.Route("/{id}", func(r chi.Router) {
 				r.With(requirePermission(lara.ViewRecord)).Get("/", s.getTagHandler)
 				r.With(requirePermission(lara.EditRecord)).Put("/", s.updateTagHandler)
 			})
@@ -126,16 +127,16 @@ func (s *Server) Router() *chi.Mux {
 		r.With(requirePermission(lara.ViewRecord)).Get("/unit", s.getAllUnitsHandler)
 		r.With(requirePermission(lara.ViewRecord)).Get("/gender", s.getAllGendersHandler)
 		r.With(requirePermission(lara.ViewRecord)).Get("/species", s.getAllSpeciesHandler)
-		r.With(requirePermission(lara.ViewRecord)).Get("/breed/by-species/:id",
+		r.With(requirePermission(lara.ViewRecord)).Get("/breed/by-species/{id}",
 			s.getAllBreedsBySpeciesHandler)
 		r.With(requirePermission(lara.ViewRecord)).Get("/city", s.searchCityHandler)
-		r.With(requirePermission(lara.ViewRecord)).Get("/street/by-city/:id",
+		r.With(requirePermission(lara.ViewRecord)).Get("/street/by-city/{id}",
 			s.searchStreetByCityHandler)
 
 		// TODO: move to owner/patient subroutes as "../search"
 		// search
 		r.With(requirePermission(lara.ViewRecord)).Get("/search", s.searchHandler)
-		r.With(requirePermission(lara.ViewRecord)).Get("/search/patient-by-tag/:tag",
+		r.With(requirePermission(lara.ViewRecord)).Get("/search/patient-by-tag/{tag}",
 			s.searchPatientByTagHandler)
 
 		// reports
@@ -166,4 +167,25 @@ func (s *Server) Serve(Hostname string, Port uint, CertFile string, KeyFile stri
 func (s *Server) Shutdown() error {
 	log.Println("Server going down...")
 	return s.srv.Shutdown(context.Background())
+}
+
+// fileServer conveniently sets up a http.FileServer handler to serve
+// static files from a http.FileSystem.
+// Stolen from go-chi _examples folder
+func fileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit URL parameters.")
+	}
+
+	fs := http.StripPrefix(path, http.FileServer(root))
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}))
 }
