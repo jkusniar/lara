@@ -10,7 +10,7 @@ build-deps:
 
 # install development dependencies, OPTIONAL
 dev-deps:
-	go get -u -v github.com/kardianos/govendor
+	go get -u -v github.com/golang/dep/cmd/dep
 	go get -u -v golang.org/x/tools/cmd/stringer
 
 # call golint on all packages except vendor folder
@@ -21,9 +21,7 @@ lint:
 
 # call go vet on all packages except vendor folder
 vet:
-	for p in $$(go list ./... | grep -v /vendor/); do \
-		go vet $$p ;\
-	done
+	go vet ./...
 
 # build executables on default arch
 build:
@@ -37,9 +35,7 @@ install:
 
 # run all tests (except vendor packages)
 test:
-	for p in $$(go list ./... | grep -v /vendor/); do \
-		go test -v $$p ;\
-	done
+	go test -v ./...
 
 # clean build artifacts
 clean:

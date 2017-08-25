@@ -7,7 +7,7 @@ Veterinary practice support software - back-end services.
 
 ## Install
 
-Requires go 1.8+
+Requires go 1.9+
 
 ```
 go install github.com/jkusniar/lara/cmd/lara
