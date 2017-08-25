@@ -23,7 +23,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/go-chi/chi/render"
+	"github.com/go-chi/render"
 	"github.com/jkusniar/lara"
 	"github.com/pkg/errors"
 )

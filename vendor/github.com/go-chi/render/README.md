@@ -1,6 +1,6 @@
-# chi/render
+# render
 
-The `render` sub-package helps manage HTTP request / response payloads.
+The `render` package helps manage HTTP request / response payloads.
 
 Every well-designed, robust and maintainable Web Service / REST API also needs
 well-*defined* request and response payloads. Together with the endpoint handlers,

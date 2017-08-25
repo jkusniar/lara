@@ -22,7 +22,7 @@ package main
 import (
 	"io/ioutil"
 
-	"github.com/go-chi/chi/docgen"
+	"github.com/go-chi/docgen"
 	"github.com/jkusniar/lara/http"
 )
 

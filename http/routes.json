@@ -2,25 +2,25 @@
   "router": {
     "middlewares": [
       {
-        "pkg": "github.com/jkusniar/lara/vendor/github.com/pressly/chi/middleware",
+        "pkg": "github.com/jkusniar/lara/vendor/github.com/go-chi/chi/middleware",
         "func": "RequestID",
         "comment": "RequestID is a middleware that injects a request ID into the context of each\nrequest. A request ID is a string of the form \"host.example.com/random-0001\",\nwhere \"random\" is a base62 random string that uniquely identifies this go\nprocess, and where the last number is an atomically incremented request\ncounter.\n",
-        "file": "github.com/jkusniar/lara/vendor/github.com/pressly/chi/middleware/request_id.go",
+        "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/vendor/github.com/go-chi/chi/middleware/request_id.go",
         "line": 63
       },
       {
-        "pkg": "github.com/jkusniar/lara/vendor/github.com/pressly/chi/middleware",
+        "pkg": "github.com/jkusniar/lara/vendor/github.com/go-chi/chi/middleware",
         "func": "Logger",
         "comment": "Logger is a middleware that logs the start and end of each request, along\nwith some useful data about what was requested, what the response status was,\nand how long it took to return. When standard output is a TTY, Logger will\nprint in color, otherwise it will print in black and white. Logger prints a\nrequest ID if one is provided.\n\nAlternatively, look at https://github.com/pressly/lg and the `lg.RequestLogger`\nmiddleware pkg.\n",
-        "file": "github.com/jkusniar/lara/vendor/github.com/pressly/chi/middleware/logger.go",
-        "line": 26
+        "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/vendor/github.com/go-chi/chi/middleware/logger.go",
+        "line": 30
       },
       {
-        "pkg": "github.com/jkusniar/lara/vendor/github.com/pressly/chi/middleware",
+        "pkg": "github.com/jkusniar/lara/vendor/github.com/go-chi/chi/middleware",
         "func": "Recoverer",
         "comment": "Recoverer is a middleware that recovers from panics, logs the panic (and a\nbacktrace), and returns a HTTP 500 (Internal Server Error) status if\npossible. Recoverer prints a request ID if one is provided.\n\nAlternatively, look at https://github.com/pressly/lg middleware pkgs.\n",
-        "file": "github.com/jkusniar/lara/vendor/github.com/pressly/chi/middleware/recoverer.go",
-        "line": 16
+        "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/vendor/github.com/go-chi/chi/middleware/recoverer.go",
+        "line": 18
       }
     ],
     "routes": {
@@ -29,29 +29,28 @@
           "GET": {
             "middlewares": [],
             "method": "GET",
-            "pkg": "github.com/jkusniar/lara/vendor/github.com/pressly/chi",
-            "func": "(*Mux).FileServer.func1",
+            "pkg": "github.com/jkusniar/lara/http",
+            "func": "fileServer.func1",
             "comment": "",
-            "file": "github.com/jkusniar/lara/vendor/github.com/pressly/chi/mux.go",
-            "line": 317,
-            "anonymous": true,
-            "unresolvable": true
+            "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+            "line": 188,
+            "anonymous": true
           }
         }
       },
-      "/api/v1": {
+      "/api/v1/*": {
         "router": {
           "middlewares": [
             {
               "pkg": "github.com/jkusniar/lara/http",
               "func": "(*Server).(github.com/jkusniar/lara/http.requireAuthorizedUser)-fm",
               "comment": "",
-              "file": "github.com/jkusniar/lara/http/server.go",
-              "line": 86
+              "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+              "line": 87
             }
           ],
           "routes": {
-            "/breed/by-species/:id": {
+            "/breed/by-species/{id}": {
               "handlers": {
                 "GET": {
                   "middlewares": [
@@ -59,7 +58,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -68,8 +67,8 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.getAllBreedsBySpeciesHandler)-fm",
                   "comment": "",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 130
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 131
                 }
               }
             },
@@ -81,7 +80,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -90,8 +89,8 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.searchCityHandler)-fm",
                   "comment": "",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 131
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 132
                 }
               }
             },
@@ -103,7 +102,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -112,12 +111,12 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.getAllGendersHandler)-fm",
                   "comment": "",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 127
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 128
                 }
               }
             },
-            "/owner": {
+            "/owner/*": {
               "router": {
                 "middlewares": [],
                 "routes": {
@@ -129,7 +128,7 @@
                             "pkg": "github.com/jkusniar/lara/http",
                             "func": "requirePermission.func1",
                             "comment": "",
-                            "file": "github.com/jkusniar/lara/http/auth.go",
+                            "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                             "line": 102,
                             "anonymous": true
                           }
@@ -138,12 +137,12 @@
                         "pkg": "github.com/jkusniar/lara/http",
                         "func": "(*Server).(github.com/jkusniar/lara/http.createOwnerHandler)-fm",
                         "comment": "",
-                        "file": "github.com/jkusniar/lara/http/server.go",
-                        "line": 90
+                        "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                        "line": 91
                       }
                     }
                   },
-                  "/:id": {
+                  "/{id}/*": {
                     "router": {
                       "middlewares": [],
                       "routes": {
@@ -155,7 +154,7 @@
                                   "pkg": "github.com/jkusniar/lara/http",
                                   "func": "requirePermission.func1",
                                   "comment": "",
-                                  "file": "github.com/jkusniar/lara/http/auth.go",
+                                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                                   "line": 102,
                                   "anonymous": true
                                 }
@@ -164,8 +163,8 @@
                               "pkg": "github.com/jkusniar/lara/http",
                               "func": "(*Server).(github.com/jkusniar/lara/http.getOwnerHandler)-fm",
                               "comment": "",
-                              "file": "github.com/jkusniar/lara/http/server.go",
-                              "line": 92
+                              "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                              "line": 93
                             },
                             "PUT": {
                               "middlewares": [
@@ -173,7 +172,7 @@
                                   "pkg": "github.com/jkusniar/lara/http",
                                   "func": "requirePermission.func1",
                                   "comment": "",
-                                  "file": "github.com/jkusniar/lara/http/auth.go",
+                                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                                   "line": 102,
                                   "anonymous": true
                                 }
@@ -182,8 +181,8 @@
                               "pkg": "github.com/jkusniar/lara/http",
                               "func": "(*Server).(github.com/jkusniar/lara/http.updateOwnerHandler)-fm",
                               "comment": "",
-                              "file": "github.com/jkusniar/lara/http/server.go",
-                              "line": 93
+                              "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                              "line": 94
                             }
                           }
                         }
@@ -193,7 +192,7 @@
                 }
               }
             },
-            "/patient": {
+            "/patient/*": {
               "router": {
                 "middlewares": [],
                 "routes": {
@@ -205,7 +204,7 @@
                             "pkg": "github.com/jkusniar/lara/http",
                             "func": "requirePermission.func1",
                             "comment": "",
-                            "file": "github.com/jkusniar/lara/http/auth.go",
+                            "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                             "line": 102,
                             "anonymous": true
                           }
@@ -214,12 +213,12 @@
                         "pkg": "github.com/jkusniar/lara/http",
                         "func": "(*Server).(github.com/jkusniar/lara/http.createPatientHandler)-fm",
                         "comment": "",
-                        "file": "github.com/jkusniar/lara/http/server.go",
-                        "line": 99
+                        "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                        "line": 100
                       }
                     }
                   },
-                  "/:id": {
+                  "/{id}/*": {
                     "router": {
                       "middlewares": [],
                       "routes": {
@@ -231,7 +230,7 @@
                                   "pkg": "github.com/jkusniar/lara/http",
                                   "func": "requirePermission.func1",
                                   "comment": "",
-                                  "file": "github.com/jkusniar/lara/http/auth.go",
+                                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                                   "line": 102,
                                   "anonymous": true
                                 }
@@ -240,8 +239,8 @@
                               "pkg": "github.com/jkusniar/lara/http",
                               "func": "(*Server).(github.com/jkusniar/lara/http.getPatientHandler)-fm",
                               "comment": "",
-                              "file": "github.com/jkusniar/lara/http/server.go",
-                              "line": 101
+                              "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                              "line": 102
                             },
                             "PUT": {
                               "middlewares": [
@@ -249,7 +248,7 @@
                                   "pkg": "github.com/jkusniar/lara/http",
                                   "func": "requirePermission.func1",
                                   "comment": "",
-                                  "file": "github.com/jkusniar/lara/http/auth.go",
+                                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                                   "line": 102,
                                   "anonymous": true
                                 }
@@ -258,8 +257,8 @@
                               "pkg": "github.com/jkusniar/lara/http",
                               "func": "(*Server).(github.com/jkusniar/lara/http.updatePatientHandler)-fm",
                               "comment": "",
-                              "file": "github.com/jkusniar/lara/http/server.go",
-                              "line": 102
+                              "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                              "line": 103
                             }
                           }
                         }
@@ -277,7 +276,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -286,12 +285,12 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.searchProductHandler)-fm",
                   "comment": "products\n",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 145
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 146
                 }
               }
             },
-            "/record": {
+            "/record/*": {
               "router": {
                 "middlewares": [],
                 "routes": {
@@ -303,7 +302,7 @@
                             "pkg": "github.com/jkusniar/lara/http",
                             "func": "requirePermission.func1",
                             "comment": "",
-                            "file": "github.com/jkusniar/lara/http/auth.go",
+                            "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                             "line": 102,
                             "anonymous": true
                           }
@@ -312,12 +311,12 @@
                         "pkg": "github.com/jkusniar/lara/http",
                         "func": "(*Server).(github.com/jkusniar/lara/http.createRecordHandler)-fm",
                         "comment": "",
-                        "file": "github.com/jkusniar/lara/http/server.go",
-                        "line": 108
+                        "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                        "line": 109
                       }
                     }
                   },
-                  "/:id": {
+                  "/{id}/*": {
                     "router": {
                       "middlewares": [],
                       "routes": {
@@ -329,7 +328,7 @@
                                   "pkg": "github.com/jkusniar/lara/http",
                                   "func": "requirePermission.func1",
                                   "comment": "",
-                                  "file": "github.com/jkusniar/lara/http/auth.go",
+                                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                                   "line": 102,
                                   "anonymous": true
                                 }
@@ -338,8 +337,8 @@
                               "pkg": "github.com/jkusniar/lara/http",
                               "func": "(*Server).(github.com/jkusniar/lara/http.getRecordHandler)-fm",
                               "comment": "",
-                              "file": "github.com/jkusniar/lara/http/server.go",
-                              "line": 110
+                              "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                              "line": 111
                             },
                             "PUT": {
                               "middlewares": [
@@ -347,7 +346,7 @@
                                   "pkg": "github.com/jkusniar/lara/http",
                                   "func": "requirePermission.func1",
                                   "comment": "",
-                                  "file": "github.com/jkusniar/lara/http/auth.go",
+                                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                                   "line": 102,
                                   "anonymous": true
                                 }
@@ -356,8 +355,8 @@
                               "pkg": "github.com/jkusniar/lara/http",
                               "func": "(*Server).(github.com/jkusniar/lara/http.updateRecordHandler)-fm",
                               "comment": "",
-                              "file": "github.com/jkusniar/lara/http/server.go",
-                              "line": 111
+                              "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                              "line": 112
                             }
                           }
                         }
@@ -375,7 +374,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -384,8 +383,8 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.getIncomeStatisticsHandler)-fm",
                   "comment": "reports\n",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 142
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 143
                 }
               }
             },
@@ -397,7 +396,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -406,12 +405,12 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.searchHandler)-fm",
                   "comment": "TODO: move to owner/patient subroutes as \"../search\"\nsearch\n",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 137
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 138
                 }
               }
             },
-            "/search/patient-by-tag/:tag": {
+            "/search/patient-by-tag/{tag}": {
               "handlers": {
                 "GET": {
                   "middlewares": [
@@ -419,7 +418,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -428,8 +427,8 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.searchPatientByTagHandler)-fm",
                   "comment": "",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 139
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 140
                 }
               }
             },
@@ -441,7 +440,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -450,12 +449,12 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.getAllSpeciesHandler)-fm",
                   "comment": "",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 128
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 129
                 }
               }
             },
-            "/street/by-city/:id": {
+            "/street/by-city/{id}": {
               "handlers": {
                 "GET": {
                   "middlewares": [
@@ -463,7 +462,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -472,12 +471,12 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.searchStreetByCityHandler)-fm",
                   "comment": "",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 133
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 134
                 }
               }
             },
-            "/tag": {
+            "/tag/*": {
               "router": {
                 "middlewares": [],
                 "routes": {
@@ -489,7 +488,7 @@
                             "pkg": "github.com/jkusniar/lara/http",
                             "func": "requirePermission.func1",
                             "comment": "",
-                            "file": "github.com/jkusniar/lara/http/auth.go",
+                            "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                             "line": 102,
                             "anonymous": true
                           }
@@ -498,12 +497,12 @@
                         "pkg": "github.com/jkusniar/lara/http",
                         "func": "(*Server).(github.com/jkusniar/lara/http.createTagHandler)-fm",
                         "comment": "",
-                        "file": "github.com/jkusniar/lara/http/server.go",
-                        "line": 117
+                        "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                        "line": 118
                       }
                     }
                   },
-                  "/:id": {
+                  "/{id}/*": {
                     "router": {
                       "middlewares": [],
                       "routes": {
@@ -515,7 +514,7 @@
                                   "pkg": "github.com/jkusniar/lara/http",
                                   "func": "requirePermission.func1",
                                   "comment": "",
-                                  "file": "github.com/jkusniar/lara/http/auth.go",
+                                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                                   "line": 102,
                                   "anonymous": true
                                 }
@@ -524,8 +523,8 @@
                               "pkg": "github.com/jkusniar/lara/http",
                               "func": "(*Server).(github.com/jkusniar/lara/http.getTagHandler)-fm",
                               "comment": "",
-                              "file": "github.com/jkusniar/lara/http/server.go",
-                              "line": 119
+                              "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                              "line": 120
                             },
                             "PUT": {
                               "middlewares": [
@@ -533,7 +532,7 @@
                                   "pkg": "github.com/jkusniar/lara/http",
                                   "func": "requirePermission.func1",
                                   "comment": "",
-                                  "file": "github.com/jkusniar/lara/http/auth.go",
+                                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                                   "line": 102,
                                   "anonymous": true
                                 }
@@ -542,8 +541,8 @@
                               "pkg": "github.com/jkusniar/lara/http",
                               "func": "(*Server).(github.com/jkusniar/lara/http.updateTagHandler)-fm",
                               "comment": "",
-                              "file": "github.com/jkusniar/lara/http/server.go",
-                              "line": 120
+                              "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                              "line": 121
                             }
                           }
                         }
@@ -561,7 +560,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -570,8 +569,8 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.getAllTitlesHandler)-fm",
                   "comment": "List Of Values\n",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 125
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 126
                 }
               }
             },
@@ -583,7 +582,7 @@
                       "pkg": "github.com/jkusniar/lara/http",
                       "func": "requirePermission.func1",
                       "comment": "",
-                      "file": "github.com/jkusniar/lara/http/auth.go",
+                      "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/auth.go",
                       "line": 102,
                       "anonymous": true
                     }
@@ -592,8 +591,8 @@
                   "pkg": "github.com/jkusniar/lara/http",
                   "func": "(*Server).(github.com/jkusniar/lara/http.getAllUnitsHandler)-fm",
                   "comment": "",
-                  "file": "github.com/jkusniar/lara/http/server.go",
-                  "line": 126
+                  "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+                  "line": 127
                 }
               }
             }
@@ -608,8 +607,8 @@
             "pkg": "github.com/jkusniar/lara/http",
             "func": "(*Server).(github.com/jkusniar/lara/http.authenticationHandler)-fm",
             "comment": "",
-            "file": "github.com/jkusniar/lara/http/server.go",
-            "line": 84
+            "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+            "line": 85
           }
         }
       },
@@ -621,8 +620,8 @@
             "pkg": "github.com/jkusniar/lara/http",
             "func": "(*Server).Router.func1",
             "comment": "heartbeat\n",
-            "file": "github.com/jkusniar/lara/http/server.go",
-            "line": 79,
+            "file": "C:/Users/johan/go/src/github.com/jkusniar/lara/http/server.go",
+            "line": 80,
             "anonymous": true
           }
         }

@@ -1,5 +1,22 @@
 # Changelog
 
+## v3.1.5
+
+- Setup golint and go vet for the project
+- As per golint, we've redefined `func ServerBaseContext(h http.Handler, baseCtx context.Context) http.Handler`
+  to `func ServerBaseContext(baseCtx context.Context, h http.Handler) http.Handler`
+
+
+## v3.1.0 (2017-07-10)
+
+- Fix a few minor issues after v3 release
+- Move `docgen` sub-pkg to https://github.com/go-chi/docgen
+- Move `render` sub-pkg to https://github.com/go-chi/render
+- Add new `URLFormat` handler to chi/middleware sub-pkg to make working with url mime 
+  suffixes easier, ie. parsing `/articles/1.json` and `/articles/1.xml`. See comments in
+  https://github.com/go-chi/chi/blob/master/middleware/url_format.go for example usage.
+
+
 ## v3.0.0 (2017-06-21)
 
 - Major update to chi library with many exciting updates, but also some *breaking changes*
