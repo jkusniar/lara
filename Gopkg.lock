@@ -4,8 +4,8 @@
 [[projects]]
   name = "github.com/go-chi/chi"
   packages = [".","middleware"]
-  revision = "ba73ba0623af32e4e5f09880177e73bd78d98852"
-  version = "v3.2.0"
+  revision = "04ec7fc4179604b2390947258f9143eaae23b596"
+  version = "v3.2.1"
 
 [[projects]]
   name = "github.com/go-chi/docgen"
@@ -35,7 +35,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["pbkdf2","scrypt"]
-  revision = "eb71ad9bd329b5ac0fd0148dd99bd62e8be8e035"
+  revision = "faadfbdc035307d901e69eea569f5dda451a3ee3"
 
 [[projects]]
   name = "gopkg.in/dgrijalva/jwt-go.v3"
@@ -46,6 +46,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "073ce076ac9f79c3374d31d2ff5dca2e67d33e6d0b486733c9e758d185c7ed6e"
+  inputs-digest = "d3afd6c957934e9ddb335c981c6abe7a11b9433f89811d7e30a98b52656bd9e0"
   solver-name = "gps-cdcl"
   solver-version = 1
