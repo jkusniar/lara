@@ -17,4 +17,10 @@
     * set lara_flags if necessary
     * add lara to pkg_scripts
 1. On target machine run dist/migration/*.sql if necessary
+1. On target machine add lara application user and set access rights using /var/lara/lara-ctl
+1. System user operating the lara deamon on target machine needs to be a member of the wheel group or needs to have following doas.conf set:
+```
+permit nopass <USERNAME> cmd /etc/rc.d/lara args stop
+permit nopass <USERNAME> cmd /etc/rc.d/lara args start
+```
 1. On target machine start service: `/etc/rc.d/lara start`

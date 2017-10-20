@@ -19,7 +19,7 @@
 #
 
 daemon="/var/lara/lara"
-daemon_flags="-dbUser lara -dbPass lara  -dbName lara"
+daemon_flags=""
 daemon_user="_lara"
 
 . /etc/rc.d/rc.subr
