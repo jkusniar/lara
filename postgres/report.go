@@ -35,6 +35,17 @@ type ReportService struct {
 }
 
 // GetIncomeStatistics counts records and income for specified time period
+//
+// TODO: better query - all SUMs in one query - over months
+// SELECT extract(year FROM r.rec_date) AS yr,
+//         extract(month FROM r.rec_date) AS mon,
+//         sum(case when r.billed = true then ri.item_price else 0.0 end) AS "Billed",
+//         sum(case when r.billed = false then ri.item_price else 0.0 end) AS "Not Billed",
+//         sum(ri.item_price) AS "Total"
+//   FROM record r
+//   JOIN record_item ri on ri.record_id = r.id
+//   GROUP BY yr, mon ORDER by yr, mon;
+//
 func (s *ReportService) GetIncomeStatistics(ctx context.Context,
 	r *lara.ReportRequest) (*lara.IncomeStatistics, error) {
 	resp := lara.IncomeStatistics{Income: "0.00", IncomeBilled: "0.00", IncomeNotBilled: "0.00"}
